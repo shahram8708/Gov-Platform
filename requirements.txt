@@ -15,3 +15,4 @@ reportlab
 markdown-it-py
 bleach
 gunicorn
+email-validator
