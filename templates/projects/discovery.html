@@ -76,7 +76,7 @@
                 <option value="gemini" {% if (form.ai_model.data or 'gemini') == 'gemini' %}selected{% endif %}>Gemini (Google Search Grounded)</option>
                 <option value="perplexity" disabled>Perplexity Sonar Pro - Coming Soon</option>
               </select>
-              <div class="form-text small text-muted">Perplexity will be enabled later; continue with Google Gemini.</div>
+              <div class="form-text small text-muted">Perplexity will be enabled later; continue with Google .</div>
               {% for error in form.ai_model.errors %}
               <div class="text-danger small">{{ error }}</div>
               {% endfor %}
