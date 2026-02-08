@@ -1,0 +1,22 @@
+{
+  "nav.home": "Home",
+  "nav.dashboard": "Dashboard",
+  "nav.discovery": "Discovery",
+  "nav.transparency": "Transparency",
+  "nav.logout": "Logout",
+  "nav.login": "Login",
+  "nav.register": "Register",
+  "nav.language": "Language",
+  "alerts.title": "Smart Alerts",
+  "alerts.none": "No active alerts",
+  "alerts.view_all": "View all alerts",
+  "language.english": "English",
+  "language.hindi": "Hindi",
+  "offline.queue": "Offline queue",
+  "offline.sync": "Sync pending complaints",
+  "offline.pending": "Pending complaints will sync when you are online.",
+  "timelapse.title": "Time-lapse Progress",
+  "timelapse.source.citizen": "Citizen",
+  "timelapse.source.public": "Public",
+  "timelapse.source.official": "Official"
+}

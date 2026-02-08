@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Public Project Transparency{% endblock %}
+{% block content %}
+<div class="discovery-hero rounded-4 p-4 p-lg-5 mb-4 position-relative overflow-hidden">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 text-dark small fw-semibold shadow-sm">
+        <i class="bi bi-geo"></i>
+        <span>Public Infrastructure Record</span>
+      </div>
+      <h2 class="h4 fw-semibold text-dark mb-2">{{ project.project_name }}</h2>
+      <div class="d-flex flex-wrap gap-2 align-items-center text-dark">
+        <span class="badge rounded-pill bg-light text-primary fw-semibold px-3 py-2"><i class="bi bi-layers me-1"></i>{{ project.project_type }}</span>
+        {% set badge = status_badges.get(project.current_status, 'secondary') %}
+        <span class="status-chip bg-{{ badge }} text-light"><i class="bi bi-activity me-1"></i>{{ project.current_status }}</span>
+      </div>
+    </div>
+    <div class="text-end text-dark">
+      <div class="small text-dark-50">Record ID</div>
+      <div class="fw-semibold">{{ project.id }}</div>
+      <div class="small text-dark-50">Visibility: Public (read-only)</div>
+    </div>
+  </div>
+  <div class="hero-orb-sm orb-blue"></div>
+  <div class="hero-orb-sm orb-amber"></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Location & Status</p>
+            <h5 class="h6 text-primary fw-semibold mb-0"><i class="bi bi-geo-alt me-2"></i>At-a-glance</h5>
+          </div>
+          <span class="chip soft-chip"><i class="bi bi-shield-lock"></i>Public view</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="small text-muted">Area</div>
+            <div class="fw-semibold">{{ project.area_label or project.location_query.location_name if project.location_query else 'Not provided' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Department</div>
+            <div class="fw-semibold">{{ project.department.department_name if project.department else 'Not recorded' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Start Date</div>
+            <div class="fw-semibold">{{ project.start_date or 'Not available' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Expected End</div>
+            <div class="fw-semibold">{{ project.expected_end_date or 'Not available' }}</div>
+          </div>
+        </div>
+        <div class="alert alert-secondary mt-3 mb-0 small">Detailed contact info and internal notes are intentionally withheld on public pages.</div>
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Status history</p>
+            <h5 class="h6 text-primary fw-semibold mb-0"><i class="bi bi-diagram-3 me-2"></i>Summary</h5>
+          </div>
+          <span class="chip subtle-pill"><i class="bi bi-clock-history"></i>Updates</span>
+        </div>
+        <div class="timeline">
+          {% for status in project.status_history %}
+          <div class="timeline-item">
+            <div class="timeline-icon bg-{{ status_badges.get(status.status, 'secondary') }}"></div>
+            <div class="timeline-content">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="fw-semibold">{{ status.status }}</div>
+                <span class="badge bg-{{ status_badges.get(status.status, 'secondary') }} text-dark">{{ status.status }}</span>
+              </div>
+              {% if status.status_date_text %}<div class="small text-muted">Recorded: {{ status.status_date_text }}</div>{% endif %}
+              <div class="small text-muted">Updated at {{ status.updated_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-muted small">No history recorded yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-building me-2"></i>Department (public)</h5>
+          <span class="chip subtle-pill"><i class="bi bi-eye"></i>Limited</span>
+        </div>
+        {% if project.department %}
+        <div class="fw-semibold">{{ project.department.department_name }}</div>
+        <div class="small text-muted">Level: {{ project.department.ministry_level or 'Not provided' }}</div>
+        {% else %}
+        <div class="text-muted small">Department not recorded.</div>
+        {% endif %}
+        <div class="alert alert-secondary small mt-3 mb-0">Contact emails and phone numbers remain restricted.</div>
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-megaphone me-2"></i>Related Complaints</h5>
+          <span class="chip soft-chip"><i class="bi bi-people"></i>Public</span>
+        </div>
+        {% set linked = project.complaints if project.complaints else [] %}
+        {% for complaint in linked %}
+          {% if complaint.is_public and complaint.visibility_level != 'PRIVATE' %}
+          <div class="border rounded p-2 mb-2 source-card">
+            <div class="fw-semibold">{{ complaint.complaint_type }}</div>
+            <div class="small text-muted">Severity: {{ complaint.severity_level }} | Status: {{ complaint.status }}</div>
+            <a class="small source-link" href="{{ url_for('complaints.public_complaint_detail', complaint_id=complaint.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>Open public view</a>
+          </div>
+          {% endif %}
+        {% else %}
+        <div class="text-muted small">No linked complaints available publicly.</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

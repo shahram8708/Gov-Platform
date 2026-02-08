@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% block title %}Citizen Dashboard{% endblock %}
+
+{% block hero %}
+<section class="citizen-hero position-relative overflow-hidden text-white py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-people-fill me-2"></i>
+          <span class="small fw-semibold text-white">Citizen services hub</span>
+        </div>
+        <h1 class="display-6 fw-semibold mb-3">Welcome, {{ current_user.full_name }}</h1>
+        <p class="lead text-white-50 mb-4">Explore nearby projects, share feedback, and track community improvements with clarity and ease.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-light text-primary fw-semibold btn-hover-lift" href="{{ url_for('projects.discovery') }}"><i class="bi bi-geo-alt-fill me-2"></i>Discover projects near you</a>
+          <a class="btn btn-outline-primary btn-hover-lift" href="#insights"><i class="bi bi-bar-chart-line me-2"></i>View insights</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card glass-card border-0 shadow-lg">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Your services</p>
+                <h6 class="mb-0 fw-semibold text-white">Location-aware discovery</h6>
+              </div>
+              <span class="badge bg-success-subtle text-success">Ready</span>
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-map"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Coverage</p>
+                    <div class="fw-semibold text-white">Citywide</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-broadcast"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Updates</p>
+                    <div class="fw-semibold text-white">Live status</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-emoji-smile"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Experience</p>
+                    <div class="fw-semibold text-white">Simple and friendly</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="progress mt-3" style="height: 6px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 82%;"></div>
+            </div>
+            <p class="small text-muted mt-2 mb-0">Discover ongoing works around you and stay informed with timely updates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="hero-orb orb-a"></span>
+    <span class="hero-orb orb-b"></span>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4" id="insights">
+  <div class="col-12 d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-1">Your community snapshot</h5>
+      <p class="text-muted mb-0">See what is happening nearby and take action quickly.</p>
+    </div>
+    <span class="badge bg-primary-subtle text-primary">Updated now</span>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card citizen-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-geo-alt"></i></span>
+          <span class="badge bg-light text-primary border">Nearby</span>
+        </div>
+        <p class="small text-muted mb-1">Projects around you</p>
+        <h4 class="fw-semibold mb-0">14</h4>
+        <div class="small text-success">Fresh updates today</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card citizen-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-check2-circle"></i></span>
+          <span class="badge bg-light text-success border">Progress</span>
+        </div>
+        <p class="small text-muted mb-1">On-track initiatives</p>
+        <h4 class="fw-semibold mb-0">92%</h4>
+        <div class="small text-muted">Steady improvements</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card citizen-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-flag"></i></span>
+          <span class="badge bg-light text-warning border">Attention</span>
+        </div>
+        <p class="small text-muted mb-1">Needs review</p>
+        <h4 class="fw-semibold mb-0">3</h4>
+        <div class="small text-muted">Flagged for follow-up</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card citizen-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-chat-dots"></i></span>
+          <span class="badge bg-light text-info border">Feedback</span>
+        </div>
+        <p class="small text-muted mb-1">Community responses</p>
+        <h4 class="fw-semibold mb-0">Active</h4>
+        <div class="small text-info">Share your thoughts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-8">
+    <div class="card citizen-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-primary text-white"><i class="bi bi-compass"></i></span>
+            <div>
+              <h6 class="mb-0">Discover nearby projects</h6>
+              <small class="text-muted">Use the map-aware discovery tool for a tailored view.</small>
+            </div>
+          </div>
+          <a class="btn btn-primary btn-hover-lift" href="{{ url_for('projects.discovery') }}"><i class="bi bi-search me-2"></i>Open discovery</a>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-geo-alt text-primary"></i>
+                <div>
+                  <div class="fw-semibold">Location smart</div>
+                  <div class="text-muted small">Find initiatives closest to you.</div>
+                </div>
+              </div>
+              <span class="badge bg-primary-subtle text-primary">Precise</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history text-success"></i>
+                <div>
+                  <div class="fw-semibold">Live status</div>
+                  <div class="text-muted small">See current progress updates.</div>
+                </div>
+              </div>
+              <span class="badge bg-success-subtle text-success">Current</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clipboard-check text-warning"></i>
+                <div>
+                  <div class="fw-semibold">Verified info</div>
+                  <div class="text-muted small">Details from official sources.</div>
+                </div>
+              </div>
+              <span class="badge bg-warning-subtle text-warning">Trusted</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-emoji-smile text-info"></i>
+                <div>
+                  <div class="fw-semibold">Easy to use</div>
+                  <div class="text-muted small">Clear steps for everyone.</div>
+                </div>
+              </div>
+              <span class="badge bg-info-subtle text-info">Friendly</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+    <div class="card citizen-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-success text-white"><i class="bi bi-hand-thumbs-up"></i></span>
+          <div>
+            <h6 class="mb-0">How to get the best results</h6>
+            <small class="text-muted">Quick tips for a smooth experience.</small>
+          </div>
+        </div>
+        <ul class="list-unstyled mb-0 d-flex flex-column gap-3">
+          <li class="d-flex gap-3 align-items-start">
+            <i class="bi bi-geo-alt-fill text-primary"></i>
+            <div>
+              <div class="fw-semibold">Enable location</div>
+              <div class="small text-muted">Allow location to see nearby projects instantly.</div>
+            </div>
+          </li>
+          <li class="d-flex gap-3 align-items-start">
+            <i class="bi bi-funnel text-success"></i>
+            <div>
+              <div class="fw-semibold">Filter clearly</div>
+              <div class="small text-muted">Choose categories and stages that matter to you.</div>
+            </div>
+          </li>
+          <li class="d-flex gap-3 align-items-start">
+            <i class="bi bi-chat-dots text-info"></i>
+            <div>
+              <div class="fw-semibold">Share feedback</div>
+              <div class="small text-muted">Send comments so teams can act faster.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card citizen-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-secondary text-white"><i class="bi bi-telephone"></i></span>
+          <div>
+            <h6 class="mb-0">Need help?</h6>
+            <small class="text-muted">Friendly support is here for you.</small>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="soft-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-headset text-primary"></i>
+                <span class="fw-semibold">Support desk</span>
+              </div>
+              <p class="small text-muted mb-0">Get guidance on using the portal.</p>
+              <span class="status-pill bg-primary-subtle text-primary">Online</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="soft-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-shield-check text-success"></i>
+                <span class="fw-semibold">Safety tips</span>
+              </div>
+              <p class="small text-muted mb-0">Your information stays protected.</p>
+              <span class="status-pill bg-success-subtle text-success">Secure</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="soft-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-envelope-paper-heart text-warning"></i>
+                <span class="fw-semibold">Stay informed</span>
+              </div>
+              <p class="small text-muted mb-0">Opt into updates you care about.</p>
+              <span class="status-pill bg-warning-subtle text-warning">Personalized</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="soft-card">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-emoji-smile text-info"></i>
+                <span class="fw-semibold">Easy language</span>
+              </div>
+              <p class="small text-muted mb-0">Plain words and simple steps.</p>
+              <span class="status-pill bg-info-subtle text-info">Friendly</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card citizen-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-dark text-white"><i class="bi bi-heart-pulse"></i></span>
+          <div>
+            <h6 class="mb-0">Community impact</h6>
+            <small class="text-muted">See how projects improve daily life.</small>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-tree text-success"></i>
+              <div>
+                <div class="fw-semibold">Greener spaces</div>
+                <div class="text-muted small">Parks, trees, and clean air projects.</div>
+              </div>
+            </div>
+            <span class="badge bg-success-subtle text-success">Active</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-bus-front text-primary"></i>
+              <div>
+                <div class="fw-semibold">Better travel</div>
+                <div class="text-muted small">Road, transit, and safety upgrades.</div>
+              </div>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">In motion</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-house-heart text-warning"></i>
+              <div>
+                <div class="fw-semibold">Community care</div>
+                <div class="text-muted small">Health, housing, and support programs.</div>
+              </div>
+            </div>
+            <span class="badge bg-warning-subtle text-warning">Expanding</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

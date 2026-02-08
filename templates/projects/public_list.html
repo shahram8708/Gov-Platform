@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Public Projects{% endblock %}
+{% block content %}
+<div class="discovery-hero rounded-4 p-4 p-lg-5 mb-4 position-relative overflow-hidden">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 text-dark small fw-semibold shadow-sm">
+        <i class="bi bi-collection"></i>
+        <span>Public Project Register</span>
+      </div>
+      <h2 class="h4 fw-semibold text-dark mb-1">All infrastructure projects marked public</h2>
+      <p class="text-dark-50 small mb-0">Search by city or type to explore verified public records.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-center text-dark">
+      <span class="chip soft-chip"><i class="bi bi-shield-lock"></i>Public view</span>
+      <span class="chip subtle-pill"><i class="bi bi-cloud-check"></i>Updated</span>
+    </div>
+  </div>
+  <div class="hero-orb-sm orb-blue"></div>
+  <div class="hero-orb-sm orb-amber"></div>
+</div>
+
+<div class="card glass-panel shadow-sm border-0 mb-3">
+  <div class="card-body">
+    <form class="row g-2 align-items-center" method="get">
+      <div class="col-lg-4 col-md-6">
+        <div class="input-group with-icon">
+          <span class="input-group-text bg-white"><i class="bi bi-geo-alt"></i></span>
+          <input type="text" class="form-control" name="city" placeholder="Filter by city/area" value="{{ filters.city }}">
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="input-group with-icon">
+          <span class="input-group-text bg-white"><i class="bi bi-diagram-3"></i></span>
+          <input type="text" class="form-control" name="project_type" placeholder="Filter by type" value="{{ filters.project_type }}">
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-4 d-flex align-items-center">
+        <button class="btn btn-primary w-100 btn-hover-lift" type="submit"><i class="bi bi-funnel me-1"></i>Filter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card glass-panel shadow-sm border-0">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <p class="text-uppercase text-muted small mb-1">Public projects</p>
+        <h5 class="h6 fw-semibold mb-0 text-primary">Browse verified records</h5>
+      </div>
+      <span class="chip soft-chip"><i class="bi bi-list-check"></i>{{ projects|length }} listed</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Project</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Area</th>
+            <th>Department</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project in projects %}
+          <tr class="align-middle">
+            <td class="fw-semibold text-primary">{{ project.project_name }}</td>
+            <td>{{ project.project_type }}</td>
+            {% set badge = status_badges.get(project.current_status, 'secondary') %}
+            <td><span class="badge bg-{{ badge }} text-dark">{{ project.current_status }}</span></td>
+            {% set area = project.area_label or (project.location_query.location_name if project.location_query else None) %}
+            <td>{{ area or 'N/A' }}</td>
+            <td>{{ project.department.department_name if project.department else 'Not recorded' }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('projects.public_project_detail', project_id=project.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>View</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-muted">No public projects found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

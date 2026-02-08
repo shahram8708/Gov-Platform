@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Report Infrastructure Issue{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card page-hero-card lift-card border-0 shadow-lg overflow-hidden">
+      <div class="card-body p-4 p-lg-5 position-relative">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div class="d-flex flex-column gap-2">
+            <div class="d-inline-flex align-items-center gap-2 text-uppercase small fw-semibold text-white-50">
+              <i class="bi bi-clipboard-data"></i><span>Citizen Evidence Intake</span>
+            </div>
+            <h1 class="h4 text-white mb-0">Report an issue for {{ project.project_name }}</h1>
+            <div class="d-flex flex-wrap gap-2 text-white-75 small">
+              <span class="badge bg-light text-primary fw-semibold d-inline-flex align-items-center gap-1"><i class="bi bi-diagram-3"></i>{{ project.project_type }}</span>
+              <span class="badge bg-light text-primary fw-semibold d-inline-flex align-items-center gap-1"><i class="bi bi-geo-alt"></i>{{ project.location_query.location_name if project.location_query else 'Not captured' }}</span>
+              <span class="badge bg-light text-primary fw-semibold d-inline-flex align-items-center gap-1"><i class="bi bi-lock"></i>Secure vault upload</span>
+            </div>
+          </div>
+          <div class="text-end d-flex flex-column align-items-end gap-2">
+            <div class="meta-chip text-white">
+              <i class="bi bi-shield-lock"></i>
+              <div>
+                <div class="small text-white-50">Traceable submission</div>
+                <div class="fw-semibold text-white">Tied to your verified identity</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="gradient-overlay"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card glass-card border-0 shadow-sm lift-card h-100">
+      <div class="card-body p-4 p-lg-5">
+        <div class="section-heading mb-4">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-pencil-square"></i></span>
+            <div>
+              <h6 class="mb-0">Submit your complaint</h6>
+              <small class="text-muted">Structured intake for faster review</small>
+            </div>
+          </div>
+        </div>
+        <form method="POST" enctype="multipart/form-data" novalidate>
+          {{ form.hidden_tag() }}
+          <input type="hidden" name="project_id" value="{{ project.id }}">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Complaint type</label>
+            {{ form.complaint_type(class='form-select') }}
+            {% for error in form.complaint_type.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Upload evidence photo</label>
+            <div class="input-group with-icon">
+              <span class="input-group-text"><i class="bi bi-camera"></i></span>
+              {{ form.image(class='form-control', accept='image/jpeg,image/png,image/webp', **{'data-max-bytes': current_app.config['MAX_IMAGE_UPLOAD_BYTES'] if current_app else 8000000}) }}
+            </div>
+            <div class="form-text">Use your camera or gallery. Allowed: JPG, PNG, WEBP. Max size {{ (current_app.config['MAX_IMAGE_UPLOAD_BYTES'] // (1024*1024)) if current_app else 8 }} MB.</div>
+            {% for error in form.image.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Additional context (optional)</label>
+            {{ form.description(class='form-control', rows='4', placeholder='Briefly describe what you see, where exactly, and any risk to public safety.') }}
+            <div class="form-text">AI will analyze the photo and draft the detailed text.</div>
+            {% for error in form.description.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          <div class="alert alert-warning d-flex align-items-start" role="alert">
+            <i class="bi bi-shield-exclamation text-warning me-2"></i>
+            <div>
+              <div class="fw-semibold">Legal traceability notice</div>
+              <div class="small">Only submit real incidents you personally observed. Your upload is stored in a secure, non-public vault and tied to your verified identity for audit purposes.</div>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2 mt-3">
+            {{ form.submit(class='btn btn-primary btn-hover-lift btn-loading', id='analyze-btn') }}
+            <div class="spinner-border text-primary d-none" id="analyze-spinner" role="status" aria-hidden="true"></div>
+            <span class="small text-muted" id="analyze-status"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card glass-card border-0 shadow-sm lift-card mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-lightbulb"></i></span>
+          <div>
+            <h6 class="mb-0">Guidance</h6>
+            <small class="text-muted">Make evidence clear</small>
+          </div>
+        </div>
+        <ul class="list-unstyled small mb-0">
+          <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Capture close-up and wide angle where safe.</li>
+          <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Include landmarks or signboards if visible.</li>
+          <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>No filters, watermarks, or screenshots.</li>
+          <li><i class="bi bi-check-circle text-success me-2"></i>One clear issue per complaint.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card glass-card border-0 shadow-sm lift-card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="icon-circle bg-info text-white"><i class="bi bi-shield-check"></i></span>
+          <h6 class="mb-0">Security</h6>
+        </div>
+        <div class="small text-muted">Uploads are stored off-public path and checked for duplicates, EXIF metadata, and authenticity signals. AI analysis uses Google Gemini Vision; results are advisory and editable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/complaints.js') }}"></script>
+{% endblock %}

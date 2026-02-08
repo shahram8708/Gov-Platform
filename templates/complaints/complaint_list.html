@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}My Complaints{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div class="d-flex flex-column gap-1">
+    <div class="d-inline-flex align-items-center gap-2 text-uppercase small fw-semibold text-primary">
+      <i class="bi bi-collection"></i><span>My Complaints</span>
+    </div>
+    <h2 class="h4 mb-0">Track and revisit your submissions</h2>
+    <p class="text-muted small mb-0">Each entry shows the unique reference (UUID), status, and severity for your submissions.</p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge bg-primary-subtle text-primary fw-semibold">Total: {{ pagination.total }}</span>
+    {% if status_filter %}
+    <span class="badge bg-info-subtle text-info fw-semibold d-flex align-items-center gap-1"><i class="bi bi-funnel"></i>{{ status_filter.replace('_',' ').title() }}</span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card glass-card border-0 shadow-sm lift-card mb-3">
+  <div class="card-body">
+    <form class="row g-3 align-items-end" method="get">
+      <div class="col-sm-4 col-md-3 col-lg-2">
+        <label class="form-label small text-muted mb-1" for="status-filter">Status</label>
+        <div class="input-group input-group-sm with-icon">
+          <span class="input-group-text"><i class="bi bi-funnel"></i></span>
+          <select id="status-filter" class="form-select" name="status">
+            <option value="">All statuses</option>
+            {% for status in status_options %}
+              <option value="{{ status }}" {% if status_filter == status %}selected{% endif %}>{{ status.replace('_', ' ').title() }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-auto d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-sm btn-hover-lift btn-loading"><i class="bi bi-check-circle me-1"></i>Apply</button>
+        {% if status_filter %}
+        <a class="btn btn-outline-secondary btn-sm btn-hover-lift" href="{{ url_for('complaints.list_my_complaints') }}"><i class="bi bi-x-circle me-1"></i>Clear</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card glass-card border-0 shadow-sm lift-card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="text-nowrap">Reference (UUID)</th>
+            <th scope="col">Title</th>
+            <th scope="col" class="text-nowrap">Project</th>
+            <th scope="col" class="text-nowrap">Status</th>
+            <th scope="col" class="text-nowrap">Severity</th>
+            <th scope="col" class="text-nowrap">Created</th>
+            <th scope="col" class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+            <tr class="row-hover">
+              <td class="text-monospace small">{{ complaint.id }}</td>
+              <td>
+                <div class="fw-semibold">{{ complaint.title }}</div>
+                <div class="text-muted small text-truncate" style="max-width: 360px;">{{ complaint.description }}</div>
+              </td>
+              <td class="small text-muted">{{ complaint.project.project_name if complaint.project else '—' }}</td>
+              <td>
+                <span class="badge rounded-pill bg-{{ complaint.status|status_badge }}">{{ complaint.status }}</span>
+              </td>
+              <td>
+                <span class="badge rounded-pill bg-{{ complaint.severity_level|severity_badge }}">{{ complaint.severity_level }}</span>
+              </td>
+              <td class="small text-muted">{{ complaint.created_at.strftime('%Y-%m-%d %H:%M') if complaint.created_at else '' }}</td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('complaints.view_complaint', complaint_id=complaint.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>View</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">No complaints yet. Submit a complaint from any project page to see it listed here.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if pagination.pages > 1 %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top gap-2">
+      <div class="small text-muted">Page {{ pagination.page }} of {{ pagination.pages }} • Total {{ pagination.total }}</div>
+      <div class="btn-group" role="group" aria-label="Complaints pagination">
+        <a class="btn btn-sm btn-outline-secondary {% if not pagination.has_prev %}disabled{% endif %}" href="{{ url_for('complaints.list_my_complaints', page=pagination.prev_num, status=status_filter) if pagination.has_prev else '#' }}">Previous</a>
+        <a class="btn btn-sm btn-outline-secondary {% if not pagination.has_next %}disabled{% endif %}" href="{{ url_for('complaints.list_my_complaints', page=pagination.next_num, status=status_filter) if pagination.has_next else '#' }}">Next</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

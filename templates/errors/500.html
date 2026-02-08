@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-body py-4">
+        <h2 class="h4 text-danger"><i class="bi bi-shield-exclamation me-2"></i>Unexpected error</h2>
+        <p class="mb-3">An unexpected error occurred while processing your request. The event has been logged. Please try again later or contact support with the approximate time of the error.</p>
+        <a class="btn btn-primary" href="/">Return to home</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title or 'Contractor Profile' }}{% endblock %}
+{% block content %}
+<div class="card page-hero-card border-0 shadow-sm mb-4 overflow-hidden">
+  <div class="gradient-overlay"></div>
+  <div class="card-body position-relative p-4 p-lg-5">
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span class="icon-circle bg-white bg-opacity-25 text-white border border-light shadow-sm">
+          <i class="bi bi-person-badge"></i>
+        </span>
+        <div>
+          <div class="text-uppercase small fw-semibold text-white-50">Contractor Profile</div>
+          <h2 class="h4 text-white mb-1">{{ contractor.name }}</h2>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            {% if contractor.company_name %}
+            <span class="profile-hero-chip"><i class="bi bi-buildings"></i><span>{{ contractor.company_name }}</span></span>
+            {% endif %}
+            {% if contractor.registration_number %}
+            <span class="profile-hero-chip"><i class="bi bi-credit-card"></i><span>Registration: {{ contractor.registration_number }}</span></span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="text-end">
+        <div class="badge bg-success-subtle text-success fw-semibold px-3 py-2" data-bs-toggle="tooltip" title="Auto-computed from severity, repeat complaints, and resolution speed">
+          <i class="bi bi-stars me-1"></i>Rating: {{ rating.rating_display }}
+        </div>
+        <div class="small text-white-75 mt-2">{{ rating.explanation }}</div>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <span class="profile-hero-chip"><i class="bi bi-envelope"></i><span>{{ contractor.email or 'Not available' }}</span></span>
+      <span class="profile-hero-chip"><i class="bi bi-telephone"></i><span>{{ contractor.phone or 'Not available' }}</span></span>
+      <span class="profile-hero-chip"><i class="bi bi-geo-alt"></i><span>{{ contractor.office_address or 'Not available' }}</span></span>
+      <span class="profile-hero-chip"><i class="bi bi-kanban"></i><span>{{ (projects|length) if projects else 0 }} linked projects</span></span>
+    </div>
+  </div>
+</div>
+
+<div class="row gy-4 align-items-stretch">
+  <div class="col-lg-4">
+    <div class="card glass-card lift-card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="text-center mb-3">
+          <div class="fw-semibold text-primary d-inline-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-shield-check"></i>
+            <span>Verified Overview</span>
+          </div>
+          {% if contractor.public_image_url %}
+          <div class="profile-photo-frame mx-auto mb-2">
+            <img src="{{ contractor.public_image_url }}" alt="Contractor profile image" class="img-fluid rounded">
+          </div>
+          <div class="small text-muted">Image sourced from public domain{% if contractor.public_image_source_domain %} ({{ contractor.public_image_source_domain }}){% endif %}</div>
+          {% else %}
+          <div class="profile-photo-placeholder text-muted mb-2"><i class="bi bi-image-alt display-6"></i></div>
+          <div class="small text-muted">No public-domain image available.</div>
+          {% endif %}
+          <div class="fw-semibold mt-3">{{ contractor.name }}</div>
+          {% if contractor.company_name %}<div class="text-muted small">{{ contractor.company_name }}</div>{% endif %}
+          {% if contractor.registration_number %}<div class="small text-muted">Registration: {{ contractor.registration_number }}</div>{% endif %}
+        </div>
+
+        <div class="vstack gap-2">
+          <div class="info-line"><i class="bi bi-envelope-open text-primary"></i><span class="small">{{ contractor.email or 'Not available' }}</span></div>
+          <div class="info-line"><i class="bi bi-telephone text-primary"></i><span class="small">{{ contractor.phone or 'Not available' }}</span></div>
+          <div class="info-line"><i class="bi bi-geo-alt text-primary"></i><span class="small">{{ contractor.office_address or 'Not available' }}</span></div>
+        </div>
+
+        <div class="mt-3 p-3 info-tile">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small text-muted">Active projects</span>
+            <span class="badge bg-primary-subtle text-primary">{{ (projects|length) if projects else 0 }}</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="small text-muted">Overall rating</span>
+            <span class="badge bg-success-subtle text-success">{{ rating.rating_display }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card glass-card lift-card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <div>
+            <p class="text-uppercase small text-muted mb-1">Projects</p>
+            <h5 class="h6 fw-semibold mb-0 d-flex align-items-center gap-2 text-primary"><i class="bi bi-diagram-3"></i><span>Associated Projects</span></h5>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary">Live linkages</span>
+        </div>
+        <p class="small text-muted mb-3">Track every record connected to this contractor, including project types, status, and quick actions to open the full record.</p>
+        {% if projects %}
+        <div class="table-responsive">
+          <table class="table table-hover align-middle table-modern">
+            <thead class="table-light">
+              <tr>
+                <th class="text-muted text-uppercase small">Project</th>
+                <th class="text-muted text-uppercase small">Type</th>
+                <th class="text-muted text-uppercase small">Status</th>
+                <th class="text-muted text-uppercase small">Cost</th>
+                <th class="text-end text-muted text-uppercase small">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for project in projects %}
+              {% set badge_class = status_badges.get(project.current_status, 'secondary') %}
+              <tr>
+                <td class="fw-semibold d-flex align-items-center gap-2">
+                  <span class="icon-circle icon-circle-sm bg-primary-subtle text-primary"><i class="bi bi-folder2-open"></i></span>
+                  <span>{{ project.project_name }}</span>
+                </td>
+                <td>{{ project.project_type }}</td>
+                <td><span class="badge rounded-pill bg-{{ badge_class }} text-light px-3">{{ project.current_status }}</span></td>
+                <td>{{ project.project_cost or 'N/A' }}</td>
+                <td class="text-end"><a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('projects.project_detail', project_id=project.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>Open record</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+          <i class="bi bi-info-circle-fill"></i>
+          <div class="small">No projects linked to this contractor.</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

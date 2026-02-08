@@ -1,0 +1,456 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block hero %}
+<section class="admin-hero position-relative overflow-hidden text-white py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-shield-lock me-2"></i>
+          <span class="small fw-semibold text-white">Administrative control center</span>
+        </div>
+        <h1 class="display-6 fw-semibold mb-3">Administrator Dashboard</h1>
+        <p class="lead text-white-50 mb-4">Oversight, approvals, and platform health—organized for confident decision-making.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-light text-primary fw-semibold btn-hover-lift" href="#overview"><i class="bi bi-layout-text-sidebar-reverse me-2"></i>View panels</a>
+          <a class="btn btn-outline-primary btn-hover-lift" href="#actions"><i class="bi bi-lightning-charge-fill me-2"></i>Quick actions</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card glass-card border-0 shadow-lg">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Environment</p>
+                <h6 class="mb-0 fw-semibold">Secure & monitored</h6>
+              </div>
+              <span class="badge bg-success-subtle text-success">Active</span>
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-activity"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">System health</p>
+                    <div class="fw-semibold text-white">Green</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-people"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Active users</p>
+                    <div class="fw-semibold text-white">Teams synced</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-shield-check"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Security posture</p>
+                    <div class="fw-semibold text-white">Validated</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-clock-history"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Response time</p>
+                    <div class="fw-semibold text-white">Under target</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="progress mt-3" style="height: 6px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 76%;"></div>
+            </div>
+            <p class="small text-muted mt-2 mb-0">Uptime, approvals, and alerts are monitored continuously to keep services steady.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="hero-orb orb-a"></span>
+    <span class="hero-orb orb-b"></span>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4" id="overview">
+  <div class="col-12 d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-1">Control center</h5>
+      <p class="text-muted mb-0">High-level visibility into activity, compliance, and support readiness.</p>
+    </div>
+    <span class="badge bg-primary-subtle text-primary">Updated just now</span>
+  </div>
+
+  <div class="col-6 col-lg-3">
+    <div class="card admin-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-kanban"></i></span>
+          <span class="badge bg-light text-primary border">Live</span>
+        </div>
+        <p class="small text-muted mb-1">Active workflows</p>
+        <h4 class="fw-semibold mb-0">12</h4>
+        <div class="small text-success">+2 since yesterday</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card admin-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-flag"></i></span>
+          <span class="badge bg-light text-warning border">Watch</span>
+        </div>
+        <p class="small text-muted mb-1">Items needing review</p>
+        <h4 class="fw-semibold mb-0">8</h4>
+        <div class="small text-muted">Prioritize escalations</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card admin-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-check2-circle"></i></span>
+          <span class="badge bg-light text-success border">Stable</span>
+        </div>
+        <p class="small text-muted mb-1">Compliance checks</p>
+        <h4 class="fw-semibold mb-0">94%</h4>
+        <div class="small text-success">On track</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card admin-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-chat-dots"></i></span>
+          <span class="badge bg-light text-info border">Feedback</span>
+        </div>
+        <p class="small text-muted mb-1">Support responses</p>
+        <h4 class="fw-semibold mb-0">Under 2h</h4>
+        <div class="small text-muted">Median turnaround</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-8">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-primary text-white"><i class="bi bi-speedometer2"></i></span>
+            <div>
+              <h6 class="mb-0">Operations overview</h6>
+              <small class="text-muted">Visibility on approvals, escalations, and uptime.</small>
+            </div>
+          </div>
+          <span class="badge bg-primary-subtle text-primary">Healthy</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-journal-check text-primary"></i>
+                <div>
+                  <div class="fw-semibold">Approval queue</div>
+                  <div class="text-muted small">Service requests and escalations</div>
+                </div>
+              </div>
+              <span class="badge bg-light text-primary border">Working</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-bell text-warning"></i>
+                <div>
+                  <div class="fw-semibold">Alerts & compliance</div>
+                  <div class="text-muted small">Policy, uptime, and data checks</div>
+                </div>
+              </div>
+              <span class="badge bg-warning-subtle text-warning">Monitor</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-people text-success"></i>
+                <div>
+                  <div class="fw-semibold">Team access</div>
+                  <div class="text-muted small">Roles, permissions, and audits</div>
+                </div>
+              </div>
+              <span class="badge bg-success-subtle text-success">Aligned</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="info-row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-hdd-network text-info"></i>
+                <div>
+                  <div class="fw-semibold">Service reliability</div>
+                  <div class="text-muted small">APIs, queues, and storage</div>
+                </div>
+              </div>
+              <span class="badge bg-info-subtle text-info">Optimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-dark text-white"><i class="bi bi-telephone"></i></span>
+          <div>
+            <h6 class="mb-0">Support readiness</h6>
+            <small class="text-muted">Clear contacts for quick help.</small>
+          </div>
+        </div>
+        <ul class="list-unstyled mb-0">
+          <li class="d-flex align-items-center justify-content-between py-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-headset text-primary"></i>
+              <span>Service desk</span>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Online</span>
+          </li>
+          <li class="d-flex align-items-center justify-content-between py-2 border-bottom">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-shield-shaded text-success"></i>
+              <span>Security liaison</span>
+            </div>
+            <span class="badge bg-success-subtle text-success">Ready</span>
+          </li>
+          <li class="d-flex align-items-center justify-content-between py-2">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-people-fill text-info"></i>
+              <span>Stakeholder updates</span>
+            </div>
+            <span class="badge bg-info-subtle text-info">Scheduled</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-8" id="actions">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-lightning-charge"></i></span>
+            <div>
+              <h6 class="mb-0">Quick actions</h6>
+              <small class="text-muted">Fast paths to the most used tools.</small>
+            </div>
+          </div>
+          <span class="badge bg-light text-info border">Shortcut</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn btn-primary btn-hover-lift"><i class="bi bi-clipboard-check me-2"></i>Review approvals</button>
+          <button type="button" class="btn btn-outline-primary btn-hover-lift"><i class="bi bi-person-gear me-2"></i>Manage access</button>
+          <button type="button" class="btn btn-outline-secondary btn-hover-lift"><i class="bi bi-graph-up-arrow me-2"></i>Monitor metrics</button>
+          <button type="button" class="btn btn-outline-success btn-hover-lift"><i class="bi bi-envelope-paper-heart me-2"></i>Send update</button>
+        </div>
+        <hr class="my-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-check2-square text-success"></i>
+                <span class="fw-semibold">Quality checks</span>
+              </div>
+              <p class="small text-muted mb-0">Verify submissions before publishing.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-diagram-3 text-primary"></i>
+                <span class="fw-semibold">Workflow mapping</span>
+              </div>
+              <p class="small text-muted mb-0">Confirm each step has an owner.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-folder-check text-warning"></i>
+                <span class="fw-semibold">Archive & retention</span>
+              </div>
+              <p class="small text-muted mb-0">Ensure records stay organized.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-primary text-white"><i class="bi bi-clock-history"></i></span>
+          <div>
+            <h6 class="mb-0">Audit timeline</h6>
+            <small class="text-muted">Recent administrative highlights.</small>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="dot bg-primary"></span>
+            <div>
+              <div class="fw-semibold">Policy update shared</div>
+              <div class="text-muted small">Permissions refreshed across teams.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="dot bg-success"></span>
+            <div>
+              <div class="fw-semibold">Security scan passed</div>
+              <div class="text-muted small">No blocking findings detected.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="dot bg-warning"></span>
+            <div>
+              <div class="fw-semibold">New request escalated</div>
+              <div class="text-muted small">Flagged for executive review.</div>
+            </div>
+          </div>
+          <div class="timeline-item mb-0">
+            <span class="dot bg-info"></span>
+            <div>
+              <div class="fw-semibold">Data snapshot stored</div>
+              <div class="text-muted small">Weekly backup captured safely.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-secondary text-white"><i class="bi bi-diagram-2"></i></span>
+          <div>
+            <h6 class="mb-0">Oversight panels</h6>
+            <small class="text-muted">Keep every stream accountable.</small>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clipboard-data text-primary"></i>
+                <div>
+                  <div class="fw-semibold">Service performance</div>
+                  <div class="text-muted small">Latency, uptime, usage</div>
+                </div>
+              </div>
+              <span class="badge bg-primary-subtle text-primary">Live feed</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clipboard-check text-success"></i>
+                <div>
+                  <div class="fw-semibold">Quality audits</div>
+                  <div class="text-muted small">Standard checks and sign-offs</div>
+                </div>
+              </div>
+              <span class="badge bg-success-subtle text-success">Aligned</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock text-warning"></i>
+                <div>
+                  <div class="fw-semibold">Risk & security</div>
+                  <div class="text-muted small">Alerts, incidents, patches</div>
+                </div>
+              </div>
+              <span class="badge bg-warning-subtle text-warning">Monitor</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-people text-info"></i>
+                <div>
+                  <div class="fw-semibold">Engagement</div>
+                  <div class="text-muted small">Citizen feedback loops</div>
+                </div>
+              </div>
+              <span class="badge bg-info-subtle text-info">Listening</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card admin-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-success text-white"><i class="bi bi-journal-medical"></i></span>
+          <div>
+            <h6 class="mb-0">Readiness checklist</h6>
+            <small class="text-muted">Simple, clear checkpoints for today.</small>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-check2-circle text-success"></i>
+              <div>
+                <div class="fw-semibold">Critical alerts cleared</div>
+                <div class="text-muted small">No outstanding high-severity notices.</div>
+              </div>
+            </div>
+            <span class="badge bg-success-subtle text-success">Clear</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-calendar-check text-primary"></i>
+              <div>
+                <div class="fw-semibold">Schedule confirmed</div>
+                <div class="text-muted small">Briefings and stakeholder updates ready.</div>
+              </div>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Planned</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-lock text-warning"></i>
+              <div>
+                <div class="fw-semibold">Access validated</div>
+                <div class="text-muted small">Role alignment verified across teams.</div>
+              </div>
+            </div>
+            <span class="badge bg-warning-subtle text-warning">In review</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

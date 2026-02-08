@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+
+{% block hero %}
+<section class="auth-hero position-relative overflow-hidden py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 text-white rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-person-badge me-2"></i>
+          <span class="small fw-semibold">Create your verified account</span>
+        </div>
+        <h1 class="display-6 fw-semibold text-white mb-3">Join the secure government workspace</h1>
+        <p class="lead text-white-50 mb-4">Use your official identity to collaborate, file, and track requests with confidence. Every registration is protected and audited.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="feature-chip text-white"><i class="bi bi-shield-check me-2"></i>Verified access</span>
+          <span class="feature-chip text-white"><i class="bi bi-check2-circle me-2"></i>Policy aligned</span>
+          <span class="feature-chip text-white"><i class="bi bi-clock-history me-2"></i>Continuous audit</span>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-stats-card shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <p class="text-uppercase text-white-50 small mb-1">Identity overview</p>
+              <h3 class="h5 text-white mb-0">Confidence by design</h3>
+            </div>
+            <span class="badge bg-light text-primary">Secure</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Verifications</div>
+                <div class="h4 text-white mb-0">Automated</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Approvals</div>
+                <div class="h4 text-white mb-0">Expedited</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mini-tile d-flex align-items-center gap-2">
+                <i class="bi bi-incognito text-warning"></i>
+                <span class="text-white-50 small">Privacy-forward onboarding protects your information.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="gradient-orb orb-1"></span>
+  <span class="gradient-orb orb-2"></span>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-10">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-5">
+        <div class="card glass-card h-100 shadow-sm border-0">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex align-items-center mb-4">
+              <div class="icon-circle bg-primary-subtle text-primary me-3"><i class="bi bi-shield-lock"></i></div>
+              <div>
+                <div class="fw-semibold text-primary">Why verify?</div>
+                <div class="text-muted small">Protect data, streamline workflows, and align with compliance requirements.</div>
+              </div>
+            </div>
+            <div class="info-tile d-flex align-items-center gap-3 mb-3">
+              <div class="icon-circle bg-success-subtle text-success"><i class="bi bi-fingerprint"></i></div>
+              <div>
+                <div class="fw-semibold">Identity-first security</div>
+                <div class="text-muted small">Every registration is validated with secure defaults and audit trails.</div>
+              </div>
+            </div>
+            <div class="info-tile d-flex align-items-center gap-3 mb-3">
+              <div class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-patch-check"></i></div>
+              <div>
+                <div class="fw-semibold">Role clarity</div>
+                <div class="text-muted small">Selecting the right role routes you to the correct permissions and tasks.</div>
+              </div>
+            </div>
+            <div class="info-tile d-flex align-items-center gap-3 mb-0">
+              <div class="icon-circle bg-info-subtle text-info"><i class="bi bi-cloud-check"></i></div>
+              <div>
+                <div class="fw-semibold">Always available</div>
+                <div class="text-muted small">Optimized for stability, with monitored uptime and resilient endpoints.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card shadow-lg border-0 lift-card h-100">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Account creation</p>
+                <h2 class="h4 fw-semibold mb-0 text-primary d-flex align-items-center gap-2"><i class="bi bi-person-plus"></i>Create secure account</h2>
+              </div>
+              <div class="icon-circle bg-primary text-white"><i class="bi bi-envelope-check"></i></div>
+            </div>
+            <form method="post" novalidate class="needs-validation">
+              {{ form.hidden_tag() }}
+              <div class="mb-3 position-relative">
+                <label class="form-label fw-semibold" for="full_name">Full Name</label>
+                <div class="input-group input-group-lg with-icon">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-person-fill text-primary"></i></span>
+                  {{ form.full_name(class_='form-control form-control-lg border-start-0 ps-2', id='full_name', placeholder='Full legal name') }}
+                </div>
+                {% for error in form.full_name.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="mb-3 position-relative">
+                <label class="form-label fw-semibold" for="email">Email</label>
+                <div class="input-group input-group-lg with-icon">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope-fill text-primary"></i></span>
+                  {{ form.email(class_='form-control form-control-lg border-start-0 ps-2', id='email', placeholder='you@example.gov') }}
+                </div>
+                {% for error in form.email.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="mb-3 position-relative">
+                <label class="form-label fw-semibold" for="role">Role</label>
+                <div class="input-group with-icon">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-briefcase-fill text-primary"></i></span>
+                  {{ form.role(class_='form-select border-start-0 ps-2', id='role') }}
+                </div>
+                <div class="form-text">Choose the role that matches your account type.</div>
+                {% for error in form.role.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold" for="password">Password</label>
+                  <div class="input-group input-group-lg with-icon">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-shield-lock-fill text-primary"></i></span>
+                    {{ form.password(class_='form-control form-control-lg border-start-0 ps-2', id='password', autocomplete='new-password', aria_describedby='passwordHelp') }}
+                  </div>
+                  <div id="passwordHelp" class="form-text">At least 12 chars, mix of upper, lower, number, and symbol.</div>
+                  {% for error in form.password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold" for="confirm_password">Confirm Password</label>
+                  <div class="input-group input-group-lg with-icon">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-check-circle-fill text-primary"></i></span>
+                    {{ form.confirm_password(class_='form-control form-control-lg border-start-0 ps-2', id='confirm_password', autocomplete='new-password') }}
+                  </div>
+                  {% for error in form.confirm_password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </div>
+              </div>
+              <div class="alert alert-light border d-flex align-items-center gap-2 mt-4 mb-3">
+                <i class="bi bi-info-circle text-primary"></i>
+                <div class="small mb-0">All registrations are subject to verification. Use your official email where applicable.</div>
+              </div>
+              <div class="d-grid gap-2">
+                {{ form.submit(class_='btn btn-primary btn-loading w-100 py-3 fw-semibold shadow-sm') }}
+                <a class="btn btn-outline-primary w-100 py-2 btn-hover-lift" href="{{ url_for('auth.login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>Already registered? Sign in</a>
+              </div>
+              <div class="d-flex align-items-center gap-2 text-primary small fw-semibold mt-2">
+                <i class="bi bi-envelope-exclamation"></i>
+                <a class="text-primary" href="{{ url_for('auth.resend_verification') }}">Didn’t get the verification email? Resend it.</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/button_spinner.js') }}"></script>
+{% endblock %}

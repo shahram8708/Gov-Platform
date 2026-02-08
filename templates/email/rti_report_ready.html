@@ -1,0 +1,15 @@
+{% extends 'email/base_email.html' %}
+{% block content %}
+  <div style="font-size:16px; font-weight:700; margin-bottom:8px; color:#0f172a;">RTI / Legal report ready</div>
+  <p style="margin:0 0 12px; font-size:14px; line-height:1.6;">Your RTI-ready PDF has been generated.</p>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-collapse:collapse; margin-bottom:12px;">
+    <tr>
+      <td style="padding:6px 0; font-size:13px; color:#334155;">Reference</td>
+      <td style="padding:6px 0; font-size:13px; color:#0f172a; font-weight:600;">{{ reference_id }}</td>
+    </tr>
+  </table>
+  <a href="{{ download_url }}" style="display:inline-block; padding:12px 18px; background-color:#0b3d91; color:#ffffff; text-decoration:none; border-radius:6px; font-weight:600;">Download PDF</a>
+  <div style="margin-top:16px; font-size:12px; color:#475569;">Checksum is included inside the PDF. Share only with authorized parties.</div>
+  <hr style="border:0; border-top:1px solid #e2e8f0; margin:18px 0;">
+  <div style="font-size:13px; line-height:1.6;">{{ content_html|safe }}</div>
+{% endblock %}

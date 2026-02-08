@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title or 'Project Transparency Detail' }}{% endblock %}
+{% block content %}
+<div class="discovery-hero rounded-4 p-4 p-lg-5 mb-4 position-relative overflow-hidden">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 text-dark small fw-semibold shadow-sm">
+        <i class="bi bi-shield-check"></i>
+        <span>Transparent Infrastructure Record</span>
+      </div>
+      <h2 class="h3 fw-semibold text-dark mb-2">{{ project.project_name }}</h2>
+      <div class="d-flex flex-wrap gap-2 align-items-center text-dark">
+        <span class="badge rounded-pill bg-light text-primary fw-semibold px-3 py-2"><i class="bi bi-layers me-1"></i>{{ project.project_type }}</span>
+        {% set badge_class = status_badges.get(project.current_status, 'secondary') %}
+        <span class="status-chip bg-{{ badge_class }} text-light"><i class="bi bi-activity me-1"></i>{{ project.current_status }}</span>
+      </div>
+      {% if project.location_query and project.location_query.location_name %}
+      <div class="small text-dark-50 mt-2 d-flex align-items-center gap-2"><i class="bi bi-geo-alt"></i><span>{{ project.location_query.location_name }}</span></div>
+      {% endif %}
+    </div>
+    <div class="text-end text-dark">
+      <div class="small text-dark-50">Record ID</div>
+      <div class="fw-semibold">{{ project.id }}</div>
+      <div class="d-flex flex-wrap gap-2 justify-content-end mt-2">
+        <a class="btn btn-sm btn-light text-danger btn-hover-lift" href="{{ url_for('complaints.new_complaint', project_id=project.id) }}">
+          <i class="bi bi-megaphone me-1"></i>Report an issue
+        </a>
+        <a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('transparency.rti_project', project_id=project.id) }}">
+          <i class="bi bi-shield-lock me-1"></i>RTI Mode
+        </a>
+      </div>
+      <div class="small text-dark-50 mt-2">RTI report is read-only and audit logged.</div>
+    </div>
+  </div>
+  <div class="hero-orb-sm orb-blue"></div>
+  <div class="hero-orb-sm orb-amber"></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Project Overview</p>
+            <h5 class="h6 text-primary fw-semibold mb-0"><i class="bi bi-info-circle me-2"></i>Key details</h5>
+          </div>
+          <span class="chip soft-chip"><i class="bi bi-clipboard-data"></i>Verified record</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="small text-muted">Project Type</div>
+            <div class="fw-semibold">{{ project.project_type }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Cost</div>
+            <div class="fw-semibold">{{ project.project_cost or 'Not available' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Start Date</div>
+            <div class="fw-semibold">{{ project.start_date or 'Not available' }}</div>
+          </div>
+          <div class="col-md-6">
+            <div class="small text-muted">Expected End</div>
+            <div class="fw-semibold">{{ project.expected_end_date or 'Not available' }}</div>
+          </div>
+          <div class="col-md-12">
+            <div class="small text-muted">Location</div>
+            <div class="fw-semibold">{{ project.location_query.location_name if project.location_query else 'Not available' }}</div>
+            {% if project.location_query and project.location_query.latitude and project.location_query.longitude %}
+            <div class="text-muted small">Lat: {{ project.location_query.latitude }} | Lng: {{ project.location_query.longitude }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">{{ _('timelapse.title') }}</p>
+            <h5 class="h6 text-primary fw-semibold mb-0"><i class="bi bi-camera-reels me-2"></i>Progress snapshots</h5>
+          </div>
+          <span class="chip subtle-pill"><i class="bi bi-images"></i>Time-lapse</span>
+        </div>
+        {% set snapshots = project.snapshots|sort(attribute='capture_date') %}
+        {% if snapshots %}
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between small text-muted">
+              <span id="snapshot-label">{{ snapshots[0].capture_date }}</span>
+              <span>{{ snapshots|length }} frame(s)</span>
+            </div>
+            <input type="range" class="form-range" min="0" max="{{ snapshots|length - 1 }}" value="0" id="snapshot-slider">
+          </div>
+          <div class="col-12 text-center">
+            <img id="snapshot-image" src="{{ url_for('projects.view_snapshot', snapshot_id=snapshots[0].id) }}" alt="Project snapshot" class="img-fluid rounded shadow-sm" style="max-height: 360px; object-fit: contain;">
+            <div class="small text-muted mt-1">{{ _('timelapse.source.' ~ snapshots[0].source_type|lower) }}</div>
+          </div>
+        </div>
+        <script>
+          window.TIMELAPSE_FRAMES = {{ snapshots|map(attribute='id')|list|tojson }};
+          window.TIMELAPSE_LABELS = {{ snapshots|map(attribute='capture_date')|list|tojson }};
+        </script>
+        {% else %}
+        <div class="text-muted small">No snapshots recorded yet.</div>
+        {% endif %}
+        <div class="alert alert-secondary small mt-3 mb-0">Community support indicates public concern, not legal verdict. Time-lapse images are monitoring-only.</div>
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        {% set timeline_missing = section_missing.get('project_timeline', []) if section_missing else [] %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-calendar3 me-2"></i>Timeline & Status History</h5>
+          {% if timeline_missing %}<span class="badge bg-warning text-dark">Missing {{ timeline_missing|length }}</span>{% endif %}
+        </div>
+        <div class="timeline">
+          {% for status in project.status_history %}
+          <div class="timeline-item">
+            <div class="timeline-icon bg-{{ status_badges.get(status.status, 'secondary') }}"></div>
+            <div class="timeline-content">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="fw-semibold">{{ status.status }}</div>
+                <span class="badge bg-{{ status_badges.get(status.status, 'secondary') }} text-light">{{ status.status }}</span>
+              </div>
+              {% if status.remarks %}<div class="text-muted small">{{ status.remarks }}</div>{% endif %}
+              <div class="small text-muted mt-1">Updated by {{ status.updated_by or 'system' }}{% if status.status_date_text %} on {{ status.status_date_text }}{% endif %}</div>
+              <div class="small text-muted">Recorded at {{ status.updated_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-muted small">No status history stored.</div>
+          {% endfor %}
+        </div>
+        {% if timeline_missing %}
+        <div class="mt-3 d-flex flex-column gap-2">
+          <button
+            class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+            type="button"
+            data-find-info-btn
+            data-section="project_timeline"
+            data-project-id="{{ project.id }}"
+            data-missing='{{ timeline_missing|tojson }}'
+            data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+            data-csrf="{{ csrf_token() }}"
+          >
+            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span class="label-text">Find Information</span>
+          </button>
+          <div class="alert alert-secondary small mb-0 d-none" data-section-alert="project_timeline"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-link-45deg me-2"></i>Official Sources & References</h5>
+          <span class="chip subtle-pill"><i class="bi bi-box-arrow-up-right"></i>Open links</span>
+        </div>
+        <div class="d-flex flex-column gap-2">
+          {% for link in project.source_links %}
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 source-card">
+            {% if link.is_image %}
+            <img src="{{ link.url }}" alt="Source reference image" class="img-fluid rounded border" style="max-height: 180px; object-fit: cover;">
+            {% else %}
+            <a class="source-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right me-1"></i>Click here</a>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="text-muted small">No source links stored.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        {% set contractor_missing = section_missing.get('contractor_details', []) if section_missing else [] %}
+        <h5 class="h6 text-primary mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-person-badge me-2"></i>Contractor</span>{% if contractor_missing %}<span class="badge bg-warning text-dark">Missing {{ contractor_missing|length }}</span>{% endif %}</h5>
+        {% if project.contractor %}
+          {% if project.contractor.public_image_url %}
+          <div class="mb-2 text-center">
+            <img src="{{ project.contractor.public_image_url }}" alt="Contractor profile image" class="img-fluid rounded shadow-sm" style="max-height: 180px; object-fit: cover;">
+            <div class="small text-muted">Image sourced from public domain{% if project.contractor.public_image_source_domain %} ({{ project.contractor.public_image_source_domain }}){% endif %}</div>
+          </div>
+          {% endif %}
+          <div class="fw-semibold">{{ project.contractor.name }}</div>
+          {% if project.contractor.company_name %}<div class="text-muted small">{{ project.contractor.company_name }}</div>{% endif %}
+          {% if project.contractor.registration_number %}<div class="small text-muted">Reg: {{ project.contractor.registration_number }}</div>{% endif %}
+          <div class="small text-muted">Email: {{ project.contractor.email or 'Not available' }}</div>
+          <div class="small text-muted">Phone: {{ project.contractor.phone or 'Not available' }}</div>
+          <div class="small text-muted">Address: {{ project.contractor.office_address or 'Not available' }}</div>
+          <a class="btn btn-sm btn-outline-primary btn-hover-lift mt-3" href="{{ url_for('projects.contractor_profile', contractor_id=project.contractor.id) }}">Open contractor profile</a>
+        {% else %}
+          <div class="text-muted small">Contractor details not captured.</div>
+        {% endif %}
+        {% if contractor_missing %}
+        <div class="mt-3 d-flex flex-column gap-2">
+          <button
+            class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+            type="button"
+            data-find-info-btn
+            data-section="contractor_details"
+            data-project-id="{{ project.id }}"
+            data-missing='{{ contractor_missing|tojson }}'
+            data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+            data-csrf="{{ csrf_token() }}"
+          >
+            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span class="label-text">Find Information</span>
+          </button>
+          <div class="small text-muted">Fetches only the missing contractor fields with public sources.</div>
+          <div class="alert alert-secondary small mb-0 d-none" data-section-alert="contractor_details"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        {% set dept_missing = section_missing.get('department_details', []) if section_missing else [] %}
+        {% set officer_missing = section_missing.get('officer_contact', []) if section_missing else [] %}
+        <h5 class="h6 text-primary mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-building me-2"></i>Government Department</span>{% if dept_missing %}<span class="badge bg-warning text-dark">Missing {{ dept_missing|length }}</span>{% endif %}</h5>
+        {% if project.department %}
+          <div class="fw-semibold">{{ project.department.department_name }}</div>
+          <div class="small text-muted">Level: {{ project.department.ministry_level or 'Not available' }}</div>
+          <div class="small text-muted">Official Email: {{ project.department.official_email or 'Not available' }}</div>
+          <div class="small text-muted">Official Phone: {{ project.department.official_phone or 'Not available' }}</div>
+          <div class="small text-muted">Office: {{ project.department.office_address or 'Not available' }}</div>
+          {% if dept_missing %}
+          <div class="mt-2">
+            <button
+              class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+              type="button"
+              data-find-info-btn
+              data-section="department_details"
+              data-project-id="{{ project.id }}"
+              data-missing='{{ dept_missing|tojson }}'
+              data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+              data-csrf="{{ csrf_token() }}"
+            >
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+              <span class="label-text">Find Information</span>
+            </button>
+            <div class="alert alert-secondary small mt-2 mb-0 d-none" data-section-alert="department_details"></div>
+          </div>
+          {% endif %}
+          <hr>
+          <div class="small fw-semibold mb-2">Responsible Officers</div>
+          {% for officer in project.department.officers if officer.is_active %}
+            {% if officer.public_image_url %}
+            <div class="d-flex align-items-center mb-2">
+              <img src="{{ officer.public_image_url }}" alt="Officer image" class="rounded me-2" style="width: 48px; height: 48px; object-fit: cover;">
+              <div>
+                <div class="fw-semibold">{{ officer.officer_name }}</div>
+                <div class="small text-muted">{{ officer.designation or 'Designation unavailable' }}</div>
+                <div class="small text-muted">Image sourced from public domain{% if officer.public_image_source_domain %} ({{ officer.public_image_source_domain }}){% endif %}</div>
+              </div>
+            </div>
+            {% else %}
+            <div class="mb-2">
+              <div class="fw-semibold">{{ officer.officer_name }}</div>
+              <div class="small text-muted">{{ officer.designation or 'Designation unavailable' }}</div>
+            </div>
+            {% endif %}
+            <div class="small text-muted">Email: {{ officer.official_email or 'Not available' }}</div>
+            <div class="small text-muted">Phone: {{ officer.official_phone or 'Not available' }}</div>
+            <hr>
+          {% else %}
+            <div class="text-muted small">No officers recorded.</div>
+          {% endfor %}
+          {% if officer_missing %}
+          <div class="mt-2">
+            <button
+              class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+              type="button"
+              data-find-info-btn
+              data-section="officer_contact"
+              data-project-id="{{ project.id }}"
+              data-missing='{{ officer_missing|tojson }}'
+              data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+              data-csrf="{{ csrf_token() }}"
+            >
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+              <span class="label-text">Find Information</span>
+            </button>
+            <div class="small text-muted mt-2">Only officer contact gaps will be fetched.</div>
+            <div class="alert alert-secondary small mt-2 mb-0 d-none" data-section-alert="officer_contact"></div>
+          </div>
+          {% endif %}
+          <a class="btn btn-sm btn-outline-secondary btn-hover-lift mt-2" href="{{ url_for('projects.department_detail', department_id=project.department.id) }}">Open department file</a>
+        {% else %}
+          <div class="text-muted small">Department details not captured.</div>
+          {% if dept_missing %}
+          <div class="mt-2">
+            <button
+              class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+              type="button"
+              data-find-info-btn
+              data-section="department_details"
+              data-project-id="{{ project.id }}"
+              data-missing='{{ dept_missing|tojson }}'
+              data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+              data-csrf="{{ csrf_token() }}"
+            >
+              <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+              <span class="label-text">Find Information</span>
+            </button>
+            <div class="alert alert-secondary small mt-2 mb-0 d-none" data-section-alert="department_details"></div>
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        {% set maintenance_missing = section_missing.get('maintenance_authority', []) if section_missing else [] %}
+        <h5 class="h6 text-primary mb-3 d-flex justify-content-between align-items-center"><span><i class="bi bi-tools me-2"></i>Maintenance Authority</span>{% if maintenance_missing %}<span class="badge bg-warning text-dark">Missing {{ maintenance_missing|length }}</span>{% endif %}</h5>
+        {% if project.maintenance_authority %}
+          <div class="fw-semibold">{{ project.maintenance_authority.authority_name }}</div>
+          <div class="small text-muted">Email: {{ project.maintenance_authority.contact_email or 'Not available' }}</div>
+          <div class="small text-muted">Phone: {{ project.maintenance_authority.contact_phone or 'Not available' }}</div>
+          <div class="small text-muted">Office: {{ project.maintenance_authority.office_address or 'Not available' }}</div>
+        {% else %}
+          <div class="text-muted small">Maintenance authority not captured.</div>
+        {% endif %}
+        {% if maintenance_missing %}
+        <div class="mt-3 d-flex flex-column gap-2">
+          <button
+            class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+            type="button"
+            data-find-info-btn
+            data-section="maintenance_authority"
+            data-project-id="{{ project.id }}"
+            data-missing='{{ maintenance_missing|tojson }}'
+            data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+            data-csrf="{{ csrf_token() }}"
+          >
+            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span class="label-text">Find Information</span>
+          </button>
+          <div class="alert alert-secondary small mb-0 d-none" data-section-alert="maintenance_authority"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% set role_name = (current_user.role.name if current_user and current_user.role else '').lower() %}
+    {% if role_name in ['government officer', 'officer', 'admin'] %}
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-upload me-2"></i>Upload Snapshot</h5>
+          <span class="chip subtle-pill"><i class="bi bi-cloud-arrow-up"></i>Secure upload</span>
+        </div>
+        <form method="POST" action="{{ url_for('projects.upload_snapshot', project_id=project.id) }}" enctype="multipart/form-data">
+          <div class="mb-2">
+            <input type="file" name="snapshot" accept="image/jpeg,image/png,image/webp" class="form-control" required>
+          </div>
+          <div class="row g-2 mb-2">
+            <div class="col-6"><input type="date" name="capture_date" class="form-control"></div>
+            <div class="col-6">
+              <select name="source_type" class="form-select">
+                <option value="OFFICIAL">Official</option>
+                <option value="PUBLIC">Public</option>
+                <option value="CITIZEN">Citizen</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm btn-hover-lift" type="submit">Save Snapshot</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card glass-panel shadow-sm border-0">
+      <div class="card-body">
+        {% set tender_missing = section_missing.get('tender_information', []) if section_missing else [] %}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="h6 text-primary mb-0"><i class="bi bi-file-earmark-text me-2"></i>Tender References</h5>
+          {% if tender_missing %}<span class="badge bg-warning text-dark">Missing {{ tender_missing|length }}</span>{% endif %}
+        </div>
+        {% if project.tender_references %}
+          <div class="d-flex flex-column gap-2">
+            {% for tender in project.tender_references %}
+            <div class="border rounded p-2 source-card">
+              <div class="fw-semibold">{{ tender.tender_id or 'Tender ID not provided' }}</div>
+              <div class="small text-muted">Portal: {{ tender.tender_portal_name or 'Not available' }}</div>
+              <div class="small text-muted">Published: {{ tender.published_date or 'Not available' }}</div>
+              {% if tender.tender_url %}
+                <a href="{{ tender.tender_url }}" target="_blank" rel="noopener noreferrer" class="small source-link"><i class="bi bi-box-arrow-up-right me-1"></i>View tender</a>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-muted small">Tender references not captured.</div>
+        {% endif %}
+        {% if tender_missing %}
+        <div class="mt-3 d-flex flex-column gap-2">
+          <button
+            class="btn btn-warning btn-sm text-dark d-inline-flex align-items-center gap-2"
+            type="button"
+            data-find-info-btn
+            data-section="tender_information"
+            data-project-id="{{ project.id }}"
+            data-missing='{{ tender_missing|tojson }}'
+            data-endpoint="{{ url_for('projects.find_missing_info_api') }}"
+            data-csrf="{{ csrf_token() }}"
+          >
+            <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span class="label-text">Find Information</span>
+          </button>
+          <div class="alert alert-secondary small mb-0 d-none" data-section-alert="tender_information"></div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/project_detail.js') }}"></script>
+{% endblock %}

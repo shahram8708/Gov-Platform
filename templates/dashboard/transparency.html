@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title or 'Transparency Dashboard' }}{% endblock %}
+
+{% block hero %}
+<section class="transparency-hero position-relative overflow-hidden text-white py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-broadcast me-2"></i>
+          <span class="small fw-semibold text-white">Public transparency</span>
+        </div>
+        <h1 class="display-6 fw-semibold mb-3">Infrastructure Performance &amp; RTI Overview</h1>
+        <p class="lead text-white-50 mb-4">Explore city-wide health, contractor reliability, and department performance with clear, actionable analytics.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-light text-primary fw-semibold btn-hover-lift" href="#analytics"><i class="bi bi-graph-up-arrow me-2"></i>View analytics</a>
+          <a class="btn btn-outline-primary btn-hover-lift" href="#filters"><i class="bi bi-funnel me-2"></i>Adjust filters</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card glass-card border-0 shadow-lg">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Analytics status</p>
+                <h6 class="mb-0 fw-semibold text-white">Fresh insights</h6>
+              </div>
+              <span class="badge bg-success-subtle text-success">Live</span>
+            </div>
+            <p class="small text-muted mb-3">Re-run analytics anytime to refresh metrics. Data stays scoped and secure.</p>
+            <form id="recalc-analytics-form" method="POST" action="{{ url_for('transparency.recalc_analytics') }}" data-confirm="Recalculate analytics now?" class="d-flex flex-wrap gap-2">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-outline-danger btn-hover-lift" type="submit"><i class="bi bi-cpu me-2"></i>Re-run analytics</button>
+            </form>
+            <div class="row g-3 mt-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-geo-alt"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Cities tracked</p>
+                    <div class="fw-semibold text-white">{{ city_overview|length }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-people"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Contractors</p>
+                    <div class="fw-semibold text-white">{{ contractor_metrics|length }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-building"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Departments</p>
+                    <div class="fw-semibold text-white">{{ department_metrics|length }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-exclamation-octagon"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Critical issues</p>
+                    <div class="fw-semibold text-white">{{ city_overview.values()|map(attribute='critical')|sum if city_overview else 0 }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="hero-orb orb-a"></span>
+    <span class="hero-orb orb-b"></span>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="card transparency-card border-0 shadow-sm mb-4" id="filters">
+  <div class="card-body p-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <span class="icon-circle bg-primary text-white"><i class="bi bi-funnel"></i></span>
+        <div>
+          <h6 class="mb-0">Refine analytics</h6>
+          <small class="text-muted">Filter by location, partners, departments, and timeframe.</small>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <span class="pill-badge text-primary bg-primary-subtle">City</span>
+        <span class="pill-badge text-info bg-info-subtle">Contractor</span>
+        <span class="pill-badge text-success bg-success-subtle">Department</span>
+        <span class="pill-badge text-warning bg-warning-subtle">Severity</span>
+      </div>
+    </div>
+    <form class="row g-3" method="GET">
+      <div class="col-md-3">
+        <label class="form-label small text-muted">City</label>
+        <input type="text" name="city" value="{{ filters.city or '' }}" class="form-control" placeholder="City or location name">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Contractor</label>
+        <select name="contractor" class="form-select">
+          <option value="">All contractors</option>
+          {% for contractor in contractors %}
+          <option value="{{ contractor.id }}" {% if filters.contractor and filters.contractor == contractor.id|string %}selected{% endif %}>{{ contractor.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Department</label>
+        <select name="department" class="form-select">
+          <option value="">All departments</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}" {% if filters.department and filters.department == dept.id|string %}selected{% endif %}>{{ dept.department_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Severity</label>
+        <select name="severity" class="form-select">
+          <option value="">All levels</option>
+          <option value="LOW" {% if filters.severity == 'LOW' %}selected{% endif %}>LOW</option>
+          <option value="MEDIUM" {% if filters.severity == 'MEDIUM' %}selected{% endif %}>MEDIUM</option>
+          <option value="HIGH" {% if filters.severity == 'HIGH' %}selected{% endif %}>HIGH</option>
+          <option value="CRITICAL" {% if filters.severity == 'CRITICAL' %}selected{% endif %}>CRITICAL</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Date From (UTC)</label>
+        <input type="datetime-local" name="date_from" value="{{ filters.date_from or '' }}" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted">Date To (UTC)</label>
+        <input type="datetime-local" name="date_to" value="{{ filters.date_to or '' }}" class="form-control">
+      </div>
+      <div class="col-md-3 d-flex align-items-end gap-2">
+        <button class="btn btn-primary btn-hover-lift" type="submit"><i class="bi bi-filter me-1"></i>Apply filters</button>
+        <a class="btn btn-outline-secondary btn-hover-lift" href="{{ url_for('transparency.public_dashboard') }}">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4 mb-4" id="analytics">
+  <div class="col-md-3">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-geo-alt"></i></span>
+          <span class="badge bg-light text-primary border">Coverage</span>
+        </div>
+        <p class="small text-muted mb-1">Cities tracked</p>
+        <h4 class="fw-semibold mb-0">{{ city_overview|length }}</h4>
+        <div class="small text-success">Updated regularly</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-people"></i></span>
+          <span class="badge bg-light text-info border">Partners</span>
+        </div>
+        <p class="small text-muted mb-1">Contractors</p>
+        <h4 class="fw-semibold mb-0">{{ contractor_metrics|length }}</h4>
+        <div class="small text-muted">Across tracked regions</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-building"></i></span>
+          <span class="badge bg-light text-success border">Departments</span>
+        </div>
+        <p class="small text-muted mb-1">Department count</p>
+        <h4 class="fw-semibold mb-0">{{ department_metrics|length }}</h4>
+        <div class="small text-success">Coordinated coverage</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-exclamation-octagon"></i></span>
+          <span class="badge bg-light text-warning border">Issues</span>
+        </div>
+        <p class="small text-muted mb-1">Critical alerts</p>
+        <h4 class="fw-semibold mb-0">{{ city_overview.values()|map(attribute='critical')|sum if city_overview else 0 }}</h4>
+        <div class="small text-muted">Requires attention</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-primary text-white"><i class="bi bi-bar-chart-line"></i></span>
+            <div>
+              <h6 class="mb-0">Complaints by city</h6>
+              <small class="text-muted">Track volume by geography.</small>
+            </div>
+          </div>
+          <span class="badge bg-primary-subtle text-primary">Live</span>
+        </div>
+        <canvas id="cityComplaintsChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-info text-white"><i class="bi bi-diagram-3"></i></span>
+            <div>
+              <h6 class="mb-0">Complaints by contractor</h6>
+              <small class="text-muted">Compare performance across vendors.</small>
+            </div>
+          </div>
+          <span class="badge bg-info-subtle text-info">Vendors</span>
+        </div>
+        <canvas id="contractorChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-success text-white"><i class="bi bi-activity"></i></span>
+            <div>
+              <h6 class="mb-0">Resolution trends</h6>
+              <small class="text-muted">Monitor pace of fixes.</small>
+            </div>
+          </div>
+          <span class="badge bg-success-subtle text-success">Progress</span>
+        </div>
+        <canvas id="resolutionTrendChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card transparency-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-warning text-white"><i class="bi bi-building-gear"></i></span>
+            <div>
+              <h6 class="mb-0">Department performance</h6>
+              <small class="text-muted">Spot strengths and gaps.</small>
+            </div>
+          </div>
+          <span class="badge bg-warning-subtle text-warning">Departments</span>
+        </div>
+        <canvas id="departmentChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="transparency-data" class="d-none"
+  data-city-overview='{{ city_overview|tojson }}'
+  data-contractor-metrics='{{ contractor_metrics|tojson }}'
+  data-department-metrics='{{ department_metrics|tojson }}'>
+</div>
+
+<div class="card transparency-card border-0 shadow-sm mt-4">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="icon-circle bg-secondary text-white"><i class="bi bi-star"></i></span>
+        <div>
+          <h6 class="mb-0">Contractor ratings</h6>
+          <small class="text-muted">Auto-computed from severity, repeat complaints, and resolution speed.</small>
+        </div>
+      </div>
+      <span class="badge bg-secondary-subtle text-secondary">Updated with filters</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Contractor</th>
+            <th>Projects</th>
+            <th>Complaints</th>
+            <th>Severity Score</th>
+            <th>Resolution Rate</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for contractor in contractors %}
+            {% set metrics = contractor_metrics.get(contractor.id) %}
+            <tr>
+              <td class="fw-semibold">{{ contractor.name }}</td>
+              <td>{{ metrics.total_projects if metrics else 0 }}</td>
+              <td>{{ metrics.total_complaints if metrics else 0 }}</td>
+              <td>{{ metrics.severity_weight if metrics else 0 }}</td>
+              <td>{{ metrics.resolution_rate if metrics else 0 }}%</td>
+              <td>
+                {% if metrics %}
+                  <span class="badge bg-success" data-bs-toggle="tooltip" title="Auto-computed from severity, repeat complaints, and resolution speed">{{ metrics.rating_display }}</span>
+                {% else %}
+                  <span class="badge bg-secondary">N/A</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/transparency.js') }}"></script>
+{% endblock %}

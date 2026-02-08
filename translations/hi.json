@@ -1,0 +1,22 @@
+{
+  "nav.home": "होम",
+  "nav.dashboard": "डैशबोर्ड",
+  "nav.discovery": "खोज",
+  "nav.transparency": "पारदर्शिता",
+  "nav.logout": "लॉगआउट",
+  "nav.login": "लॉगिन",
+  "nav.register": "रजिस्टर",
+  "nav.language": "भाषा",
+  "alerts.title": "स्मार्ट अलर्ट",
+  "alerts.none": "कोई सक्रिय अलर्ट नहीं",
+  "alerts.view_all": "सभी अलर्ट देखें",
+  "language.english": "अंग्रेजी",
+  "language.hindi": "हिंदी",
+  "offline.queue": "ऑफलाइन कतार",
+  "offline.sync": "लंबित शिकायतें सिंक करें",
+  "offline.pending": "इंटरनेट आते ही लंबित शिकायतें स्वतः सिंक होंगी।",
+  "timelapse.title": "समय-क्रम प्रगति",
+  "timelapse.source.citizen": "नागरिक",
+  "timelapse.source.public": "सार्वजनिक",
+  "timelapse.source.official": "अधिकृत"
+}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Public Complaints{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+  <div class="d-flex flex-column gap-1">
+    <div class="d-inline-flex align-items-center gap-2 text-uppercase small fw-semibold text-primary">
+      <i class="bi bi-megaphone"></i><span>Anonymized Public Complaints</span>
+    </div>
+    <h2 class="h5 mb-0">Issue types, severity, and status only</h2>
+    <p class="text-muted small mb-0">Citizen privacy protected — only minimal details shown.</p>
+  </div>
+  <div class="badge bg-primary-subtle text-primary fw-semibold">Total: {{ complaints|length }}</div>
+</div>
+
+<div class="card glass-card border-0 shadow-sm lift-card mb-3">
+  <div class="card-body">
+    <form class="row g-3 align-items-end" method="get">
+      <div class="col-sm-4 col-md-3 col-lg-3">
+        <label class="form-label small text-muted mb-1">Area</label>
+        <div class="input-group with-icon input-group-sm">
+          <span class="input-group-text"><i class="bi bi-geo"></i></span>
+          <input class="form-control" name="area" placeholder="Area" value="{{ filters.area }}">
+        </div>
+      </div>
+      <div class="col-sm-4 col-md-3 col-lg-3">
+        <label class="form-label small text-muted mb-1">Status</label>
+        <div class="input-group with-icon input-group-sm">
+          <span class="input-group-text"><i class="bi bi-funnel"></i></span>
+          <select class="form-select" name="status">
+            <option value="">Any status</option>
+            {% for status in status_options %}
+            <option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4 col-md-3 col-lg-3">
+        <label class="form-label small text-muted mb-1">Severity</label>
+        <div class="input-group with-icon input-group-sm">
+          <span class="input-group-text"><i class="bi bi-thermometer-half"></i></span>
+          <select class="form-select" name="severity">
+            <option value="">Any severity</option>
+            {% for severity in severity_options %}
+            <option value="{{ severity }}" {% if filters.severity == severity %}selected{% endif %}>{{ severity }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-auto d-flex gap-2">
+        <button class="btn btn-primary btn-sm btn-hover-lift btn-loading" type="submit"><i class="bi bi-funnel-fill me-1"></i>Filter</button>
+        {% if filters.area or filters.status or filters.severity %}
+        <a class="btn btn-outline-secondary btn-sm btn-hover-lift" href="{{ url_for('complaints.public_complaints') }}"><i class="bi bi-x-circle me-1"></i>Clear</a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card glass-card border-0 shadow-sm lift-card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Project</th>
+            <th>Issue Type</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Area</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints %}
+          <tr class="row-hover">
+            <td class="fw-semibold text-primary">{{ complaint.project.project_name if complaint.project else 'N/A' }}</td>
+            <td>{{ complaint.complaint_type }}</td>
+            <td><span class="badge rounded-pill bg-{{ complaint.severity_level|severity_badge }}">{{ complaint.severity_level }}</span></td>
+            <td><span class="badge rounded-pill bg-{{ complaint.status|status_badge }}">{{ complaint.status }}</span></td>
+            {% set area = complaint.location_snapshot.location_name if complaint.location_snapshot else None %}
+            {% if not area and complaint.project and complaint.project.location_query %}
+              {% set area = complaint.project.location_query.location_name %}
+            {% endif %}
+            <td>{{ area or 'N/A' }}</td>
+            <td><a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('complaints.public_complaint_detail', complaint_id=complaint.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>View</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted py-4">No public complaints found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

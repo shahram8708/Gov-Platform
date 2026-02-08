@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block hero %}
+<section class="auth-hero position-relative overflow-hidden py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 text-white rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-shield-check me-2"></i>
+          <span class="small fw-semibold">Trusted Access Portal</span>
+        </div>
+        <h1 class="display-6 fw-semibold text-white mb-3">Welcome back to your secure workspace</h1>
+        <p class="lead text-white-50 mb-4">Authenticate with your official credentials to manage services, track requests, and stay ahead of critical updates.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="feature-chip text-white"><i class="bi bi-lock-fill me-2"></i>Multi-layer security</span>
+          <span class="feature-chip text-white"><i class="bi bi-activity me-2"></i>Real-time monitoring</span>
+          <span class="feature-chip text-white"><i class="bi bi-cloud-check me-2"></i>Reliable uptime</span>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-stats-card shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <p class="text-uppercase text-white-50 small mb-1">Operational snapshot</p>
+              <h3 class="h5 text-white mb-0">Continuity in focus</h3>
+            </div>
+            <span class="badge bg-light text-primary">Live</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Uptime</div>
+                <div class="h4 text-white mb-0">99.98%</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Sessions</div>
+                <div class="h4 text-white mb-0">Monitored</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mini-tile d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock-fill text-success"></i>
+                <span class="text-white-50 small">Encryption enforced for every login attempt.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="gradient-orb orb-1"></span>
+  <span class="gradient-orb orb-2"></span>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-10">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-6">
+        <div class="card glass-card h-100 shadow-sm border-0">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex align-items-center mb-4">
+              <div class="icon-circle bg-primary-subtle text-primary me-3"><i class="bi bi-activity"></i></div>
+              <div>
+                <div class="fw-semibold text-primary">Operational assurance</div>
+                <div class="text-muted small">Audit trails, encrypted sessions, and resilience checks keep every action safe.</div>
+              </div>
+            </div>
+            <div class="row g-3 mb-4">
+              <div class="col-6">
+                <div class="info-tile">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span class="text-muted small">Access</span>
+                    <i class="bi bi-fingerprint text-primary"></i>
+                  </div>
+                  <div class="fw-semibold">Multi-factor ready</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="info-tile">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span class="text-muted small">Support</span>
+                    <i class="bi bi-headset text-primary"></i>
+                  </div>
+                  <div class="fw-semibold">24/7 oversight</div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="info-tile d-flex align-items-center gap-3">
+                  <div class="icon-circle bg-success-subtle text-success"><i class="bi bi-shield-fill-check"></i></div>
+                  <div>
+                    <div class="fw-semibold">Compliant by design</div>
+                    <div class="text-muted small">Built with secure defaults, continuous monitoring, and offline resilience.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-light border d-flex align-items-center gap-2 mb-0">
+              <i class="bi bi-shield-lock-fill text-primary"></i>
+              <div class="small mb-0">Access is monitored and audited. Do not share credentials.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-lg border-0 lift-card h-100">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Account access</p>
+                <h2 class="h4 fw-semibold mb-0 text-primary d-flex align-items-center gap-2"><i class="bi bi-shield-lock"></i> Secure login</h2>
+              </div>
+              <div class="icon-circle bg-primary text-white"><i class="bi bi-key-fill"></i></div>
+            </div>
+            <form method="post" novalidate class="needs-validation">
+              {{ form.hidden_tag() }}
+              <div class="mb-3 position-relative">
+                <label class="form-label fw-semibold" for="email">Official email</label>
+                <div class="input-group input-group-lg with-icon">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope-fill text-primary"></i></span>
+                  {{ form.email(class_='form-control form-control-lg border-start-0 ps-2', id='email', placeholder='you@example.gov') }}
+                </div>
+                {% for error in form.email.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="mb-3 position-relative">
+                <label class="form-label fw-semibold" for="password">Password</label>
+                <div class="input-group input-group-lg with-icon">
+                  <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock-fill text-primary"></i></span>
+                  {{ form.password(class_='form-control form-control-lg border-start-0 ps-2', id='password', autocomplete='current-password') }}
+                </div>
+                {% for error in form.password.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+              <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="form-check">
+                  {{ form.remember_me(class_='form-check-input', id='remember_me') }}
+                  <label class="form-check-label" for="remember_me">Keep me signed in on this device</label>
+                </div>
+                <span class="badge bg-light text-primary">Monitored</span>
+              </div>
+              <div class="d-grid gap-2">
+                {{ form.submit(class_='btn btn-primary btn-loading w-100 py-3 fw-semibold shadow-sm') }}
+                <a class="btn btn-outline-primary w-100 py-2 btn-hover-lift" href="{{ url_for('auth.register') }}"><i class="bi bi-person-plus me-2"></i>Need an account? Register</a>
+              </div>
+              <p class="text-muted small mt-3 mb-1 d-flex align-items-center gap-2"><i class="bi bi-info-circle"></i> Use your official credentials. Contact support if you notice unusual activity.</p>
+              <div class="d-flex align-items-center gap-2 text-primary small fw-semibold">
+                <i class="bi bi-envelope-exclamation"></i>
+                <a class="text-primary" href="{{ url_for('auth.resend_verification') }}">Didn’t get the verification email? Resend it.</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/button_spinner.js') }}"></script>
+{% endblock %}

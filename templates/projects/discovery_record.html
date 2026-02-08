@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% block title %}Saved Discovery{% endblock %}
+{% block content %}
+<div class="discovery-hero rounded-4 p-4 p-lg-5 mb-4 position-relative overflow-hidden">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div>
+      <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill bg-white bg-opacity-10 text-dark small fw-semibold shadow-sm">
+        <i class="bi bi-geo-alt"></i>
+        <span>Saved discovery</span>
+      </div>
+      <h2 class="h3 fw-semibold text-dark mb-2">{{ location_query.location_name }}</h2>
+      <p class="mb-0 text-dark-50 small">Recorded on {{ location_query.created_at.strftime('%Y-%m-%d %H:%M') }} • Ref {{ location_query.id }}</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-outline-primary btn-hover-lift" href="{{ url_for('projects.discovery_history') }}"><i class="bi bi-clock-history me-2"></i>History</a>
+      <a class="btn btn-light text-primary btn-hover-lift" href="{{ url_for('projects.discovery') }}"><i class="bi bi-compass me-2"></i>New discovery</a>
+    </div>
+  </div>
+  <div class="hero-orb-sm orb-blue"></div>
+  <div class="hero-orb-sm orb-amber"></div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+          <div>
+            <div class="fw-semibold text-primary text-uppercase small">Query summary</div>
+            <div class="d-flex align-items-center gap-2 text-muted small">
+              <span class="badge rounded-pill bg-primary-subtle text-primary px-3"><i class="bi bi-funnel me-1"></i>{{ location_query.query_type|upper }}</span>
+              <span class="text-muted">{{ location_query.manual_input or 'GPS captured' }}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            {% if location_query.latitude and location_query.longitude %}
+            <span class="chip soft-chip"><i class="bi bi-geo me-1"></i>{{ '%.4f'|format(location_query.latitude) }}, {{ '%.4f'|format(location_query.longitude) }}</span>
+            {% endif %}
+            <span class="chip soft-chip"><i class="bi bi-diagram-3 me-1"></i>{{ location_query.project_types|length }} types</span>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          {% for t in location_query.project_types or [] %}
+          <span class="chip subtle-pill"><i class="bi bi-check2-circle me-1"></i>{{ t }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="info-strip d-flex align-items-start gap-3 mb-3">
+          <div class="icon-circle icon-circle-soft text-primary"><i class="bi bi-info-lg"></i></div>
+          <div>
+            <div class="fw-semibold">Replay of grounded results</div>
+            <div class="text-muted small">Source links, transparency data, and AI findings are preserved exactly as saved.</div>
+          </div>
+        </div>
+
+        <div class="alert alert-success border-0 rounded-3 shadow-sm mb-0" role="alert">
+          <div class="d-flex align-items-start gap-3">
+            <div class="icon-circle bg-white text-success shadow-sm"><i class="bi bi-shield-check"></i></div>
+            <div>
+              <div class="fw-semibold">Saved reference</div>
+              <div class="text-muted small mb-2">This discovery is stored with UUID {{ location_query.id }}. You can reopen anytime from history.</div>
+              <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-sm btn-outline-success btn-hover-lift" href="{{ url_for('projects.discovery_record', query_id=location_query.id) }}"><i class="bi bi-arrow-clockwise me-1"></i>Refresh saved view</a>
+                <a class="btn btn-sm btn-outline-secondary btn-hover-lift" href="{{ url_for('projects.discovery_history') }}"><i class="bi bi-collection me-1"></i>History</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if projects %}
+    <div class="card glass-panel shadow-sm border-0" id="project-results">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Projects in this discovery</p>
+            <h5 class="h6 fw-semibold mb-0 text-primary">{{ projects|length }} project{{ '' if projects|length == 1 else 's' }} saved</h5>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="chip soft-chip"><i class="bi bi-diagram-2 me-1"></i>Types: {{ location_query.project_types|length }}</span>
+            {% if location_query.latitude and location_query.longitude %}
+            <span class="chip soft-chip"><i class="bi bi-geo-alt me-1"></i>Scoped map</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="row g-3">
+          {% for project in projects %}
+          <div class="col-md-12">
+            <div class="project-card card border-0 shadow-sm h-100 lift-card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                  <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2"><i class="bi bi-layers me-1"></i>{{ project.project_type }}</span>
+                  {% set badge_class = status_badges.get(project.current_status, 'secondary') %}
+                  <span class="status-chip bg-{{ badge_class }} text-light"><i class="bi bi-activity me-1"></i>{{ project.current_status }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                  <div class="flex-grow-1">
+                    <h4 class="h6 fw-semibold mb-1">{{ project.project_name }}</h4>
+                    <p class="small text-muted mb-3">Department: {% if project.department %}<a href="{{ url_for('projects.department_detail', department_id=project.department.id) }}" class="text-decoration-none fw-semibold">{{ project.department.department_name }}</a>{% else %}Not provided{% endif %}</p>
+                  </div>
+                  <div class="mini-stat text-end">
+                    <div class="text-muted small">Tender ref</div>
+                    <div class="fw-semibold">{% if project.tender_references|length > 0 %}{{ project.tender_references[0].tender_id or 'Not provided' }}{% else %}Not provided{% endif %}</div>
+                  </div>
+                </div>
+
+                <div class="info-grid small mb-3">
+                  <div class="info-item"><i class="bi bi-person-gear text-primary me-2"></i>Contractor: {% if project.contractor %}<a href="{{ url_for('projects.contractor_profile', contractor_id=project.contractor.id) }}" class="text-decoration-none fw-semibold">{{ project.contractor.name }}</a>{% else %}Not provided{% endif %}</div>
+                  <div class="info-item"><i class="bi bi-cash-coin text-primary me-2"></i>Cost: {{ project.project_cost }}</div>
+                  <div class="info-item"><i class="bi bi-calendar-event text-primary me-2"></i>Start: {{ project.start_date }} | Expected end: {{ project.expected_end_date }}</div>
+                  <div class="info-item"><i class="bi bi-tools text-primary me-2"></i>Maintenance: {% if project.maintenance_authority %}{{ project.maintenance_authority.authority_name }}{% else %}Not provided{% endif %}</div>
+                </div>
+
+                <div class="mb-2 d-flex align-items-center gap-2">
+                  <div class="icon-circle icon-circle-soft text-primary"><i class="bi bi-link-45deg"></i></div>
+                  <div class="fw-semibold small mb-0">Source links</div>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                  {% for link in project.source_links %}
+                  {% if link.is_image %}
+                  <div class="source-card border rounded-3 p-2 bg-light">
+                    <img src="{{ link.url }}" alt="Source reference image" class="img-fluid rounded" style="max-height: 170px; object-fit: cover;">
+                  </div>
+                  {% else %}
+                  <a class="source-link" href="{{ link.url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-box-arrow-up-right me-1"></i>Open source</a>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+
+                <div class="mt-3 d-flex justify-content-end">
+                  <a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('projects.project_detail', project_id=project.id) }}"><i class="bi bi-archive"></i> Open transparency record</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-light border shadow-sm" role="alert">
+      <div class="d-flex align-items-start gap-2">
+        <i class="bi bi-inbox text-primary"></i>
+        <div>No projects were stored for this discovery.</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Map preview</p>
+            <h5 class="h6 fw-semibold mb-0 text-primary">Location focus</h5>
+          </div>
+          <span class="chip subtle-pill"><i class="bi bi-map"></i>Static preview</span>
+        </div>
+        <div
+          id="project-map"
+          class="rounded-3 shadow-sm map-shell"
+          data-map='{{ (map_data or {}) | tojson | replace("'", "&#39;") | safe }}'
+        ></div>
+        <div class="small text-muted mt-2">Location scoped to your saved search; no API key required.</div>
+      </div>
+    </div>
+
+    {% if discovery_markdown_html %}
+    <div class="card glass-panel shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">AI findings</p>
+            <h5 class="h6 fw-semibold mb-0 text-primary">Grounded summary</h5>
+          </div>
+          <span class="chip soft-chip"><i class="bi bi-robot"></i>AI</span>
+        </div>
+        <div class="markdown-body small discovery-markdown">
+          {{ discovery_markdown_html|safe }}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card glass-panel shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <div class="icon-circle icon-circle-soft text-success"><i class="bi bi-clipboard-check"></i></div>
+          <div>
+            <p class="text-uppercase text-muted small mb-0">Submission checklist</p>
+            <h5 class="h6 fw-semibold mb-0 text-primary">Ready to reopen</h5>
+          </div>
+        </div>
+        <ul class="list-unstyled small mb-0 d-grid gap-2">
+          <li class="check-row"><i class="bi bi-check-circle-fill text-success me-2"></i>GPS or manual location captured</li>
+          <li class="check-row"><i class="bi bi-check-circle-fill text-success me-2"></i>At least one infrastructure type selected</li>
+          <li class="check-row"><i class="bi bi-check-circle-fill text-success me-2"></i>AI response grounded with stored source links</li>
+          <li class="check-row mb-0"><i class="bi bi-check-circle-fill text-success me-2"></i>Transparency records and RTI-ready sources saved</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/project_discovery.js') }}"></script>
+{% endblock %}

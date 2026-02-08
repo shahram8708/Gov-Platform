@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+{% block title %}Contractor Dashboard{% endblock %}
+
+{% block hero %}
+<section class="contractor-hero position-relative overflow-hidden text-white py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-hammer me-2"></i>
+          <span class="small fw-semibold text-white">Project delivery hub</span>
+        </div>
+        <h1 class="display-6 fw-semibold mb-3">Contractor Dashboard</h1>
+        <p class="lead text-white-50 mb-4">Track linked entities, monitor progress, and access the tools you need to keep every milestone on schedule.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-light text-primary fw-semibold btn-hover-lift" href="#workstreams"><i class="bi bi-kanban-fill me-2"></i>View workstreams</a>
+          <a class="btn btn-outline-primary btn-hover-lift" href="#actions"><i class="bi bi-lightning-charge-fill me-2"></i>Quick actions</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card glass-card border-0 shadow-lg">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <p class="text-uppercase text-muted small mb-1">Engagement status</p>
+                <h6 class="mb-0 fw-semibold text-white">Active assignments</h6>
+              </div>
+              <span class="badge bg-success-subtle text-success">On track</span>
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-building"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Linked entity</p>
+                    <div class="fw-semibold text-white">{{ linked_entity_context.label if linked_entity_context else 'Pending link' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-diagram-3"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Entity type</p>
+                    <div class="fw-semibold text-white">{{ linked_entity_context.entity_type if linked_entity_context else 'Unspecified' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-shield-lock"></i></span>
+                  <div>
+                    <p class="small text-muted mb-0">Secure access</p>
+                    <div class="fw-semibold text-white">Verified via official email</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="progress mt-3" style="height: 6px;">
+              <div class="progress-bar bg-primary" role="progressbar" style="width: 74%;"></div>
+            </div>
+            <p class="small text-muted mt-2 mb-0">Your projects, compliance, and documentation stay aligned for smooth delivery.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="hero-orb orb-a"></span>
+    <span class="hero-orb orb-b"></span>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4" id="workstreams">
+  <div class="col-12 d-flex align-items-center justify-content-between">
+    <div>
+      <h5 class="mb-1">Workstreams overview</h5>
+      <p class="text-muted mb-0">Stay focused on delivery, quality, and compliance.</p>
+    </div>
+    <span class="badge bg-primary-subtle text-primary">Updated now</span>
+  </div>
+
+  {% if linked_entity_context %}
+  <div class="col-12">
+    <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+      <i class="bi bi-shield-lock me-2"></i>
+      <div>Linked entity: <strong>{{ linked_entity_context.label }}</strong> ({{ linked_entity_context.entity_type }}). Data is scoped to your verified email.</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="col-6 col-lg-3">
+    <div class="card contractor-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-kanban"></i></span>
+          <span class="badge bg-light text-primary border">Active</span>
+        </div>
+        <p class="small text-muted mb-1">Live projects</p>
+        <h4 class="fw-semibold mb-0">9</h4>
+        <div class="small text-success">3 milestones due this week</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card contractor-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-success-subtle text-success"><i class="bi bi-clipboard-check"></i></span>
+          <span class="badge bg-light text-success border">Quality</span>
+        </div>
+        <p class="small text-muted mb-1">Inspections passed</p>
+        <h4 class="fw-semibold mb-0">94%</h4>
+        <div class="small text-muted">Keep compliance steady</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card contractor-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-warning-subtle text-warning"><i class="bi bi-flag"></i></span>
+          <span class="badge bg-light text-warning border">Watch</span>
+        </div>
+        <p class="small text-muted mb-1">Items needing attention</p>
+        <h4 class="fw-semibold mb-0">5</h4>
+        <div class="small text-muted">Prioritize resolution</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card contractor-card h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-people"></i></span>
+          <span class="badge bg-light text-info border">Teams</span>
+        </div>
+        <p class="small text-muted mb-1">Crew readiness</p>
+        <h4 class="fw-semibold mb-0">Aligned</h4>
+        <div class="small text-info">Resources confirmed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-8" id="actions">
+    <div class="card contractor-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle bg-primary text-white"><i class="bi bi-lightning-charge"></i></span>
+            <div>
+              <h6 class="mb-0">Quick actions</h6>
+              <small class="text-muted">Jump into your most-used tools.</small>
+            </div>
+          </div>
+          <span class="badge bg-primary-subtle text-primary">Shortcuts</span>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <button type="button" class="btn btn-primary btn-hover-lift"><i class="bi bi-upload me-2"></i>Upload report</button>
+          <button type="button" class="btn btn-outline-primary btn-hover-lift"><i class="bi bi-clipboard-data me-2"></i>View metrics</button>
+          <button type="button" class="btn btn-outline-secondary btn-hover-lift"><i class="bi bi-people-gear me-2"></i>Manage crew</button>
+          <button type="button" class="btn btn-outline-success btn-hover-lift"><i class="bi bi-envelope-paper-heart me-2"></i>Notify client</button>
+        </div>
+        <hr class="my-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-check2-square text-success"></i>
+                <span class="fw-semibold">Safety checklists</span>
+              </div>
+              <p class="small text-muted mb-0">Confirm site safety before and after shifts.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-diagram-3 text-primary"></i>
+                <span class="fw-semibold">Schedule & tasks</span>
+              </div>
+              <p class="small text-muted mb-0">Assign owners and keep milestones clear.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mini-panel">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-archive text-warning"></i>
+                <span class="fw-semibold">Docs & proofs</span>
+              </div>
+              <p class="small text-muted mb-0">Store approvals and inspections securely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4">
+    <div class="card contractor-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-success text-white"><i class="bi bi-shield-check"></i></span>
+          <div>
+            <h6 class="mb-0">Compliance tracker</h6>
+            <small class="text-muted">Keep quality and safety aligned.</small>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="dot bg-success"></span>
+            <div>
+              <div class="fw-semibold">Site safety verified</div>
+              <div class="text-muted small">Latest audit passed with no major findings.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="dot bg-primary"></span>
+            <div>
+              <div class="fw-semibold">Materials delivered</div>
+              <div class="text-muted small">Inventory confirmed and tagged.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <span class="dot bg-warning"></span>
+            <div>
+              <div class="fw-semibold">Pending inspection</div>
+              <div class="text-muted small">Schedule follow-up for electrical review.</div>
+            </div>
+          </div>
+          <div class="timeline-item mb-0">
+            <span class="dot bg-info"></span>
+            <div>
+              <div class="fw-semibold">Client update sent</div>
+              <div class="text-muted small">Stakeholders notified of next steps.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card contractor-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-secondary text-white"><i class="bi bi-tools"></i></span>
+          <div>
+            <h6 class="mb-0">Resource readiness</h6>
+            <small class="text-muted">Have what you need before work begins.</small>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-box-seam text-primary"></i>
+                <div>
+                  <div class="fw-semibold">Materials</div>
+                  <div class="text-muted small">Inventory and delivery timing</div>
+                </div>
+              </div>
+              <span class="badge bg-primary-subtle text-primary">Stocked</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-people text-success"></i>
+                <div>
+                  <div class="fw-semibold">Crew alignment</div>
+                  <div class="text-muted small">Shift coverage confirmed</div>
+                </div>
+              </div>
+              <span class="badge bg-success-subtle text-success">Ready</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-lock text-warning"></i>
+                <div>
+                  <div class="fw-semibold">Permits & access</div>
+                  <div class="text-muted small">Verified site credentials</div>
+                </div>
+              </div>
+              <span class="badge bg-warning-subtle text-warning">Monitor</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="list-tile">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-broadcast text-info"></i>
+                <div>
+                  <div class="fw-semibold">Communications</div>
+                  <div class="text-muted small">Updates ready to send</div>
+                </div>
+              </div>
+              <span class="badge bg-info-subtle text-info">Clear</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card contractor-card h-100">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-dark text-white"><i class="bi bi-hand-thumbs-up"></i></span>
+          <div>
+            <h6 class="mb-0">Delivery best practices</h6>
+            <small class="text-muted">Keep teams aligned and clients informed.</small>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-clipboard-data text-success"></i>
+              <div>
+                <div class="fw-semibold">Share clear updates</div>
+                <div class="text-muted small">Provide concise progress notes after each milestone.</div>
+              </div>
+            </div>
+            <span class="badge bg-success-subtle text-success">Consistent</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-diagram-3 text-primary"></i>
+              <div>
+                <div class="fw-semibold">Align schedules</div>
+                <div class="text-muted small">Sync with dependencies to avoid blockers.</div>
+              </div>
+            </div>
+            <span class="badge bg-primary-subtle text-primary">Coordinated</span>
+          </div>
+          <div class="check-row">
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-shield-check text-warning"></i>
+              <div>
+                <div class="fw-semibold">Document compliance</div>
+                <div class="text-muted small">Store approvals, inspections, and permits.</div>
+              </div>
+            </div>
+            <span class="badge bg-warning-subtle text-warning">Tracked</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

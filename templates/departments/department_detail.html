@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title or 'Department Detail' }}{% endblock %}
+{% block content %}
+<div class="card page-hero-card border-0 shadow-sm mb-4 overflow-hidden">
+  <div class="gradient-overlay"></div>
+  <div class="card-body position-relative p-4 p-lg-5">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span class="icon-circle bg-white bg-opacity-25 text-white border border-light shadow-sm">
+          <i class="bi bi-building"></i>
+        </span>
+        <div>
+          <div class="text-uppercase small fw-semibold text-white-50">Department Detail</div>
+          <h2 class="h4 text-white mb-1">{{ department.department_name }}</h2>
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="profile-hero-chip"><i class="bi bi-diagram-3"></i><span>{{ department.ministry_level or 'Ministry level not set' }}</span></span>
+            <span class="profile-hero-chip"><i class="bi bi-people"></i><span>{{ department.officers|length if department.officers else 0 }} officers listed</span></span>
+            <span class="profile-hero-chip"><i class="bi bi-kanban"></i><span>{{ projects|length if projects else 0 }} linked projects</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-column align-items-end gap-2">
+        <span class="badge bg-light text-primary fw-semibold px-3 py-2"><i class="bi bi-shield-check me-1"></i>Official record</span>
+        <div class="small text-white-75">Contact details verified and managed centrally.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row gy-4 align-items-stretch">
+  <div class="col-lg-4">
+    <div class="card glass-card lift-card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle icon-circle-sm bg-primary-subtle text-primary"><i class="bi bi-info-circle"></i></span>
+          <div>
+            <p class="text-uppercase small text-muted mb-0">Overview</p>
+            <h5 class="h6 fw-semibold mb-0 text-primary">Department Overview</h5>
+          </div>
+        </div>
+        <div class="vstack gap-2">
+          <div class="info-line"><i class="bi bi-diagram-2"></i><span class="small">Ministry Level: {{ department.ministry_level or 'Not available' }}</span></div>
+          <div class="info-line"><i class="bi bi-envelope"></i><span class="small">Official Email: {{ department.official_email or 'Not available' }}</span></div>
+          <div class="info-line"><i class="bi bi-telephone"></i><span class="small">Official Phone: {{ department.official_phone or 'Not available' }}</span></div>
+          <div class="info-line"><i class="bi bi-geo-alt"></i><span class="small">Office Address: {{ department.office_address or 'Not available' }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card glass-card lift-card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle icon-circle-sm bg-success-subtle text-success"><i class="bi bi-people"></i></span>
+            <div>
+              <p class="text-uppercase small text-muted mb-0">Team</p>
+              <h5 class="h6 fw-semibold mb-0 text-primary">Officers</h5>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary">Active profiles</span>
+        </div>
+        {% if department.officers %}
+          {% for officer in department.officers if officer.is_active %}
+          <div class="officer-card">
+            <div class="d-flex align-items-start gap-3">
+              <div class="officer-avatar">
+                {% if officer.public_image_url %}
+                <img src="{{ officer.public_image_url }}" alt="Officer image">
+                {% else %}
+                <div class="avatar-placeholder text-muted"><i class="bi bi-person"></i></div>
+                {% endif %}
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-1">
+                  <div class="fw-semibold">{{ officer.officer_name }}</div>
+                  {% if officer.designation %}<span class="badge bg-primary-subtle text-primary">{{ officer.designation }}</span>{% endif %}
+                </div>
+                <div class="small text-muted">{{ officer.designation or 'Designation unavailable' }}</div>
+                <div class="small text-muted">Email: {{ officer.official_email or 'Not available' }}</div>
+                <div class="small text-muted">Phone: {{ officer.official_phone or 'Not available' }}</div>
+                {% if officer.public_image_url %}
+                <div class="small text-muted">Image sourced from public domain{% if officer.public_image_source_domain %} ({{ officer.public_image_source_domain }}){% endif %}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+        <div class="alert alert-light border text-muted small mb-0" role="alert">
+          <i class="bi bi-info-circle-fill me-2"></i>No officers recorded.
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card glass-card lift-card h-100 border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <span class="icon-circle icon-circle-sm bg-info-subtle text-info"><i class="bi bi-diagram-3"></i></span>
+            <div>
+              <p class="text-uppercase small text-muted mb-0">Projects</p>
+              <h5 class="h6 fw-semibold mb-0 text-primary">Associated Projects</h5>
+            </div>
+          </div>
+          <span class="badge bg-secondary-subtle text-secondary">Live records</span>
+        </div>
+        <p class="small text-muted mb-3">Review every linked project with quick access to transparency details.</p>
+        {% if projects %}
+        <div class="table-responsive">
+          <table class="table table-modern align-middle">
+            <thead class="table-light">
+              <tr>
+                <th class="text-muted text-uppercase small">Project</th>
+                <th class="text-muted text-uppercase small">Type</th>
+                <th class="text-muted text-uppercase small">Status</th>
+                <th class="text-end text-muted text-uppercase small">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for project in projects %}
+              {% set badge_class = status_badges.get(project.current_status, 'secondary') %}
+              <tr>
+                <td class="fw-semibold">{{ project.project_name }}</td>
+                <td>{{ project.project_type }}</td>
+                <td><span class="badge rounded-pill bg-{{ badge_class }} text-light px-3">{{ project.current_status }}</span></td>
+                <td class="text-end"><a class="btn btn-sm btn-outline-primary btn-hover-lift" href="{{ url_for('projects.project_detail', project_id=project.id) }}"><i class="bi bi-box-arrow-up-right me-1"></i>Open</a></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-0" role="alert">
+          <i class="bi bi-info-circle-fill"></i>
+          <div class="small">No linked projects.</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

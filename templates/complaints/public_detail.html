@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}Public Complaint Status{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card page-hero-card lift-card border-0 shadow-lg overflow-hidden">
+      <div class="card-body p-4 p-lg-5 position-relative">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+          <div class="d-flex flex-column gap-2">
+            <div class="d-inline-flex align-items-center gap-2 text-uppercase small fw-semibold text-white-50">
+              <i class="bi bi-eye"></i><span>Anonymized Complaint</span>
+            </div>
+            <h1 class="h5 text-white mb-0">{{ complaint.project.project_name if complaint.project else 'Project' }}</h1>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge bg-light text-primary fw-semibold d-inline-flex align-items-center gap-1"><i class="bi bi-tag"></i>{{ complaint.complaint_type }}</span>
+              <span class="badge bg-{{ complaint.severity_level|severity_badge }} text-white d-inline-flex align-items-center gap-1"><i class="bi bi-flag"></i>{{ complaint.severity_level }}</span>
+              <span class="badge bg-{{ complaint.status|status_badge }} text-white d-inline-flex align-items-center gap-1"><i class="bi bi-patch-check"></i>{{ complaint.status }}</span>
+            </div>
+          </div>
+          <div class="text-end d-flex flex-column align-items-end gap-2">
+            <div class="meta-chip text-white">
+              <i class="bi bi-hash"></i>
+              <div>
+                <div class="small text-white-50">Complaint ID</div>
+                <div class="fw-semibold text-white">{{ complaint.id }}</div>
+              </div>
+            </div>
+            <span class="badge bg-dark text-white d-inline-flex align-items-center gap-1"><i class="bi bi-shield-lock"></i>Visibility: {{ complaint.visibility_level }}</span>
+          </div>
+        </div>
+        <div class="gradient-overlay"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card glass-card border-0 shadow-sm lift-card mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-primary-subtle text-primary"><i class="bi bi-geo"></i></span>
+          <div>
+            <h6 class="mb-0">Area</h6>
+            <small class="text-muted">Location information is generalized</small>
+          </div>
+        </div>
+        <div class="fw-semibold">{{ public_payload.area or (complaint.project.location_query.location_name if complaint.project and complaint.project.location_query else 'Not provided') }}</div>
+        <div class="alert alert-secondary small mt-3 mb-0 d-flex align-items-start gap-2"><i class="bi bi-shield-exclamation"></i><span>Exact addresses, citizen identities, and contact details are never shown on public pages.</span></div>
+      </div>
+    </div>
+
+    <div class="card glass-card border-0 shadow-sm lift-card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-info-subtle text-info"><i class="bi bi-activity"></i></span>
+          <div>
+            <h6 class="mb-0">Status Timeline</h6>
+            <small class="text-muted">Key public milestones</small>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-icon bg-secondary"></div>
+            <div class="timeline-content">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="fw-semibold">Submitted</div>
+                <span class="badge bg-secondary text-white">SUBMITTED</span>
+              </div>
+              <div class="small text-muted">{{ complaint.created_at.strftime('%Y-%m-%d %H:%M') if complaint.created_at else '' }}</div>
+            </div>
+          </div>
+          {% for status in complaint.status_history %}
+          <div class="timeline-item">
+            <div class="timeline-icon bg-{{ status.new_status|status_badge }}"></div>
+            <div class="timeline-content">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="fw-semibold">{{ status.new_status }}</div>
+                <span class="badge bg-{{ status.new_status|status_badge }} text-white">{{ status.new_status }}</span>
+              </div>
+              <div class="small text-muted">{{ status.changed_at.strftime('%Y-%m-%d %H:%M') if status.changed_at else '' }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card glass-card border-0 shadow-sm lift-card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="icon-circle bg-secondary-subtle text-secondary"><i class="bi bi-info-circle"></i></span>
+          <div>
+            <h6 class="mb-0">Public Metadata</h6>
+            <small class="text-muted">Shared without personal data</small>
+          </div>
+        </div>
+        <div class="d-flex flex-column gap-2 small text-muted">
+          <div><span class="fw-semibold text-white">Issue:</span> {{ complaint.complaint_type }}</div>
+          <div><span class="fw-semibold text-white">Severity:</span> {{ complaint.severity_level }}</div>
+          <div><span class="fw-semibold text-white">Status:</span> {{ complaint.status }}</div>
+          <div><span class="fw-semibold text-white">Filed:</span> {{ complaint.created_at.strftime('%Y-%m-%d %H:%M') if complaint.created_at else 'N/A' }}</div>
+        </div>
+        <div class="alert alert-info mt-3 mb-0 small d-flex align-items-start gap-2"><i class="bi bi-lock"></i><span>Descriptions, images, emails, and phone numbers remain private or role-restricted.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

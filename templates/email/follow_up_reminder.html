@@ -1,0 +1,11 @@
+{% extends 'email/base_email.html' %}
+{% block content %}
+  <div style="font-size:16px; font-weight:700; margin-bottom:8px; color:#0f172a;">Follow-up required</div>
+  <p style="margin:0 0 10px; font-size:14px; line-height:1.6;">This is follow-up level {{ follow_up_level }} for complaint {{ complaint_id }}.</p>
+  <p style="margin:0 0 12px; font-size:13px; color:#b91c1c;">Reason: {{ follow_up_reason }}</p>
+  <div style="background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; margin-bottom:12px;">
+    <div style="font-weight:600; font-size:13px; color:#0f172a; margin-bottom:6px;">Latest summary</div>
+    <div style="font-size:13px; line-height:1.6;">{{ content_html|safe }}</div>
+  </div>
+  <div style="font-size:12px; color:#475569;">This reminder is logged. Please update status to avoid escalation.</div>
+{% endblock %}

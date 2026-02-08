@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Access Denied{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0">
+      <div class="card-body py-4">
+        <h2 class="h4 text-warning"><i class="bi bi-shield-lock me-2"></i>Access denied</h2>
+        <p class="mb-3">You do not have permission to access this resource. This attempt has been logged.</p>
+        <a class="btn btn-primary" href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('auth.login') }}">Return to safety</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

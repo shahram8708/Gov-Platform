@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Verify Email{% endblock %}
+
+{% block hero %}
+<section class="auth-hero position-relative overflow-hidden py-5">
+  <div class="container position-relative">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="d-inline-flex align-items-center bg-white bg-opacity-10 text-white rounded-pill px-3 py-2 shadow-sm mb-3">
+          <i class="bi bi-envelope-check me-2"></i>
+          <span class="small fw-semibold">Email verification required</span>
+        </div>
+        <h1 class="display-6 fw-semibold text-white mb-3">Secure your account with verified access</h1>
+        <p class="lead text-white-50 mb-4">We send a protected link to confirm your identity. This keeps your data safe and ensures only authorized users can proceed.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="feature-chip text-white"><i class="bi bi-shield-lock me-2"></i>Encrypted delivery</span>
+          <span class="feature-chip text-white"><i class="bi bi-clock-history me-2"></i>Time-bound links</span>
+          <span class="feature-chip text-white"><i class="bi bi-journal-check me-2"></i>Audit-ready</span>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-stats-card shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <p class="text-uppercase text-white-50 small mb-1">Verification safety</p>
+              <h3 class="h5 text-white mb-0">Integrity protected</h3>
+            </div>
+            <span class="badge bg-light text-primary">Secure</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Delivery</div>
+                <div class="h4 text-white mb-0">Encrypted</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mini-tile">
+                <div class="text-white-50 small">Validity</div>
+                <div class="h4 text-white mb-0">Timed</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="mini-tile d-flex align-items-center gap-2">
+                <i class="bi bi-shield-check text-success"></i>
+                <span class="text-white-50 small">Verified links prevent unauthorized access attempts.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="gradient-orb orb-1"></span>
+  <span class="gradient-orb orb-2"></span>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-8 col-xxl-7">
+    <div class="card shadow-lg border-0 lift-card">
+      <div class="card-body p-4 p-lg-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <div>
+            <p class="text-uppercase text-muted small mb-1">Email confirmation</p>
+            <h2 class="h5 fw-semibold mb-0 text-primary d-flex align-items-center gap-2"><i class="bi bi-envelope-open-heart"></i> Verify your email</h2>
+          </div>
+          <div class="icon-circle bg-primary text-white"><i class="bi bi-lock-fill"></i></div>
+        </div>
+        <p class="text-muted small mb-3">To protect your account, verification is required before access is granted.</p>
+        <form method="post" novalidate class="needs-validation">
+          {{ form.hidden_tag() }}
+          <div class="alert alert-info d-flex align-items-start gap-2 small" role="alert">
+            <i class="bi bi-shield-check text-primary"></i>
+            <div>A secure verification link will be sent to your registered email address.</div>
+          </div>
+          <div class="d-grid gap-2">
+            {{ form.submit(class_='btn btn-primary btn-loading w-100 py-3 fw-semibold shadow-sm') }}
+            <a class="btn btn-outline-primary w-100 py-2 btn-hover-lift" href="{{ url_for('auth.login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>Back to login</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/button_spinner.js') }}"></script>
+{% endblock %}
