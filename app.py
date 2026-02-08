@@ -212,6 +212,10 @@ def create_app(config_name: Optional[str] = None) -> Flask:
     return app
 
 
+# Expose the Flask application for WSGI servers (e.g., gunicorn app:app).
+app = create_app()
+
+
 def register_error_handlers(app: Flask) -> None:
     @app.errorhandler(403)
     def forbidden(error):
@@ -230,6 +234,5 @@ def register_error_handlers(app: Flask) -> None:
 
 
 if __name__ == "__main__":
-    application = create_app()
     port = int(os.getenv("PORT", 5000))
-    application.run(host="0.0.0.0", port=port, use_reloader=False)
+    app.run(host="0.0.0.0", port=port, use_reloader=False)
