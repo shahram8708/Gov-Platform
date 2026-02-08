@@ -16,6 +16,23 @@ from utils.identity_linker import active_entity_context
 from extensions import csrf, db, migrate, login_manager
 
 
+def register_error_handlers(app: Flask) -> None:
+    @app.errorhandler(403)
+    def forbidden(error):
+        app.logger.warning("403 Forbidden", extra={"path": request.path, "method": request.method})
+        return render_template("errors/403.html"), 403
+
+    @app.errorhandler(404)
+    def not_found_error(error):
+        app.logger.warning("404 Not Found", extra={"path": request.path, "method": request.method})
+        return render_template("errors/404.html"), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        app.logger.exception("500 Internal Server Error")
+        return render_template("errors/500.html"), 500
+
+
 def ensure_default_roles_and_admin(app: Flask) -> None:
     """Ensure baseline roles exist and a default admin can log in without registering."""
     from models import Role, User  # Local import to avoid circular dependency
@@ -214,23 +231,6 @@ def create_app(config_name: Optional[str] = None) -> Flask:
 
 # Expose the Flask application for WSGI servers (e.g., gunicorn app:app).
 app = create_app()
-
-
-def register_error_handlers(app: Flask) -> None:
-    @app.errorhandler(403)
-    def forbidden(error):
-        app.logger.warning("403 Forbidden", extra={"path": request.path, "method": request.method})
-        return render_template("errors/403.html"), 403
-
-    @app.errorhandler(404)
-    def not_found_error(error):
-        app.logger.warning("404 Not Found", extra={"path": request.path, "method": request.method})
-        return render_template("errors/404.html"), 404
-
-    @app.errorhandler(500)
-    def internal_error(error):
-        app.logger.exception("500 Internal Server Error")
-        return render_template("errors/500.html"), 500
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 """Secure image handling utilities for complaint evidence."""
 import hashlib
-import imghdr
 import io
 import os
 import uuid
@@ -90,11 +89,14 @@ def validate_image_file(file: FileStorage, max_bytes: int = DEFAULT_MAX_IMAGE_BY
 
     content = file.read()
     _fail_if(len(content) > max_bytes, "File exceeds size limits")
-    sniffed = imghdr.what(None, h=content)
-    _fail_if(sniffed not in ALLOWED_IMAGE_EXTENSIONS, "Invalid image data")
 
     try:
         with Image.open(io.BytesIO(content)) as img:
+            sniffed = (img.format or "").lower()
+            normalized_sniffed = "jpeg" if sniffed == "jpeg" else sniffed
+            normalized_ext = "jpeg" if ext in ("jpg", "jpeg") else ext
+            _fail_if(normalized_sniffed not in ALLOWED_IMAGE_EXTENSIONS, "Invalid image data")
+            _fail_if(normalized_sniffed != normalized_ext, "File extension mismatch")
             img.verify()
     except Exception as exc:
         raise ValueError("Image validation failed") from exc
